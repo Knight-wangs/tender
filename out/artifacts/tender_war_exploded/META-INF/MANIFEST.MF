@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Title: tender
+Implementation-Version: 0.0.2-SNAPSHOT
+Built-By: knightwang
+Implementation-Vendor-Id: com.telecom
+Created-By: IntelliJ IDEA
+Build-Jdk: 10
+Main-Class: ${start-class}
+
