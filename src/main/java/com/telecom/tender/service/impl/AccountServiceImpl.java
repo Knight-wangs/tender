@@ -78,8 +78,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public int saveCompanyFileHash(String filehash, String id) {
-        return accountMapper.saveCompanyFileHash(filehash, id);
+    public int saveCompanyFileHash(String filehash, String fileData,String id) {
+        return accountMapper.saveCompanyFileHash(filehash,fileData,id);
     }
 
     @Override

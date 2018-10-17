@@ -20,7 +20,7 @@ public interface AccountService {
     //设置招标方公司
     int saveCompanyFile(String fileposition,String id);
     //设置招标方文件信息文件hash
-    int saveCompanyFileHash(String filehash,String id);
+    int saveCompanyFileHash(String filehash,String fileData,String id);
     //更新评委信息
     int updateApprovalInfo(String info,String id);
     //查询投标方信息

@@ -154,7 +154,8 @@ public class ProjectControl {
 
         if (null!=uploadresult&&uploadresult.getString("msg").equals("success")){
             String hash = uploadresult.getJSONObject("data").getString("md5");
-            projectService.saveProjectFileHash(hash,id,ProjectFileType.INTRODUCE);
+            String fileData = projectService.getFileData(uploadresult.getString("data"));
+            projectService.saveProjectFileHash(hash,fileData,id,ProjectFileType.INTRODUCE);
             transactionManager.commit(status);
             return SUCCESS;
         }
@@ -204,7 +205,8 @@ public class ProjectControl {
 
         if (null!=uploadresult&&uploadresult.getString("msg").equals("success")){
             String hash = uploadresult.getJSONObject("data").getString("md5");
-            projectService.saveProjectFileHash(hash,id,ProjectFileType.ASSESSOR);
+            String fileData = projectService.getFileData(uploadresult.getString("data"));
+            projectService.saveProjectFileHash(hash,fileData,id,ProjectFileType.ASSESSOR);
             projectService.setProjectState(id,"1"); //上传招标公告后，修改状态为开标
             transactionManager.commit(status);
             return SUCCESS;
@@ -256,7 +258,8 @@ public class ProjectControl {
 
         if (null!=uploadresult&&uploadresult.getString("msg").equals("success")){
             String hash = uploadresult.getJSONObject("data").getString("md5");
-            projectService.saveProjectFileHash(hash,id,ProjectFileType.RESULT);
+            String fileData = projectService.getFileData(uploadresult.getString("data"));
+            projectService.saveProjectFileHash(hash,fileData,id,ProjectFileType.RESULT);
             projectService.setProjectState(id,"4"); //上传招标结果后，修改状态为定标
             transactionManager.commit(status);
             return SUCCESS;
@@ -309,7 +312,8 @@ public class ProjectControl {
 
         if (null!=uploadresult&&uploadresult.getString("msg").equals("success")){
             String hash = uploadresult.getJSONObject("data").getString("md5");
-            projectService.saveProjectFileHash(hash,id,ProjectFileType.CONTRACT);
+            String fileData = projectService.getFileData(uploadresult.getString("data"));
+            projectService.saveProjectFileHash(hash,fileData,id,ProjectFileType.CONTRACT);
             projectService.setProjectState(id,"4"); //上传招标结果后，修改状态为定标
             transactionManager.commit(status);
             return SUCCESS;
@@ -381,7 +385,8 @@ public class ProjectControl {
         }
         if (null!=uploadresult&&uploadresult.getString("msg").equals("success")){
             String hash = uploadresult.getJSONObject("data").getString("md5");
-            accountService.saveCompanyFileHash(hash,id);
+            String fileData = projectService.getFileData(uploadresult.getString("data"));
+            accountService.saveCompanyFileHash(hash,fileData,id);
             return SUCCESS;
         }
         return FAIL;
@@ -429,7 +434,8 @@ public class ProjectControl {
         }
         if (null!=uploadresult&&uploadresult.getString("msg").equals("success")){
             String hash = uploadresult.getJSONObject("data").getString("md5");
-            projectService.uploadBidderForm(projectId,bidderId,PATH,hash);
+            String fileData = projectService.getFileData(uploadresult.getString("data"));
+            projectService.uploadBidderForm(projectId,bidderId,PATH,hash,fileData);
             return SUCCESS;
         }
         return FAIL;

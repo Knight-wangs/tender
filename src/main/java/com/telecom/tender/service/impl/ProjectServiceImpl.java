@@ -82,7 +82,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
-    public int saveProjectFile(String filePath, String id, String fileType) {
+    public int saveProjectFile(String filePath, String id, String fileType ) {
         if (fileType.equals(ProjectFileType.INTRODUCE)){
             return projectMapper.setIntroFile(filePath,id);
         }
@@ -99,28 +99,28 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public int saveProjectFileHash(String fileHash, String id, String fileType) {
+    public int saveProjectFileHash(String fileHash, String fileData,String id, String fileType) {
         if (fileType.equals(ProjectFileType.INTRODUCE)){
-            return projectMapper.saveIntroFileHash(fileHash,id);
+            return projectMapper.saveIntroFileHash(fileHash,id,fileData);
         }
         if (fileType.equals(ProjectFileType.ASSESSOR)){
-            return projectMapper.saveAssessoFileHash(fileHash,id);
+            return projectMapper.saveAssessoFileHash(fileHash,id,fileData);
         }
         if (fileType.equals(ProjectFileType.RESULT)) {
-            return projectMapper.saveResultsFileHash(fileHash,id);
+            return projectMapper.saveResultsFileHash(fileHash,id,fileData);
         }
         if (fileType.equals(ProjectFileType.CONTRACT)){
-            return projectMapper.saveContractFileHash(fileHash,id);
+            return projectMapper.saveContractFileHash(fileHash,id,fileData);
         }
         return 0;
     }
 
     @Override
-    public int uploadBidderForm(String projectid, String bidderid, String tenderFile, String tenderFileHash) {
+    public int uploadBidderForm(String projectid, String bidderid, String tenderFile, String tenderFileHash,String tenderFileData) {
         if(StringUtils.isNotBlank(projectMapper.getTenderFile(projectid, bidderid))){
             return projectMapper.uploadTenderFile(projectid, bidderid, tenderFile, tenderFileHash);
         }
-        return projectMapper.uploadBidderForm(projectid, bidderid, tenderFile, tenderFileHash);
+        return projectMapper.uploadBidderForm(projectid, bidderid, tenderFile, tenderFileHash,tenderFileData);
     }
 
     @Override
@@ -340,7 +340,17 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    private JSONObject checkFile(MultipartFile multipartFile,String storeHash){
+    @Override
+    public String getFileData(String filedata) {
+        JSONObject ev_json = new JSONObject();
+        JSONObject file_json = new JSONObject();
+        ev_json.put("存证对象","文件");
+        file_json.put("files",filedata);
+        JSONObject result = depositService.evidencestore("文件存证","招投标平台",ev_json.toString(),file_json.toString());
+        return result.toJSONString();
+    }
+
+    private JSONObject checkFile(MultipartFile multipartFile, String storeHash){
         JSONObject result = new JSONObject();
         result.put("notChanged",false);
         result.put("originalHash",storeHash);

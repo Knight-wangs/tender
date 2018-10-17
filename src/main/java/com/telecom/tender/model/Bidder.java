@@ -8,6 +8,7 @@ public class Bidder {
     private String phonenumber;
     private String info;
     private String filehash;
+    private String fileData;
     private String fileposition;
 
     public String getUserid() {
@@ -73,5 +74,13 @@ public class Bidder {
 
     public void setFileposition(String fileposition) {
         this.fileposition = fileposition;
+    }
+
+    public String getFileData() {
+        return fileData;
+    }
+
+    public void setFileData(String fileData) {
+        this.fileData = fileData;
     }
 }

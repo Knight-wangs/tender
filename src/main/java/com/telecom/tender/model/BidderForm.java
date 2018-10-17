@@ -6,6 +6,7 @@ public class BidderForm {
     private String bidderid;
     private String tenderFile;
     private String tenderFileHash;
+    private String tenderFileData;
 
     public int getId() {
         return id;
@@ -45,5 +46,13 @@ public class BidderForm {
 
     public void setTenderFileHash(String tenderFileHash) {
         this.tenderFileHash = tenderFileHash;
+    }
+
+    public String getTenderFileData() {
+        return tenderFileData;
+    }
+
+    public void setTenderFileData(String tenderFileData) {
+        this.tenderFileData = tenderFileData;
     }
 }

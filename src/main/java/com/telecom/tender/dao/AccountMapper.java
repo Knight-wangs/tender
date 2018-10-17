@@ -47,8 +47,8 @@ public interface AccountMapper {
     int saveCompanyFile(@Param("fileposition") String fileposition,@Param("userid") String userid);
 
     //设置投标方资质审核文件hash
-    @Update("update bidder set filehash = #{filehash} where userid=#{userid}")
-    int saveCompanyFileHash(@Param("filehash") String filehash,@Param("userid") String userid);
+    @Update("update bidder set filehash = #{filehash},fileData = #{fileData} where userid=#{userid}")
+    int saveCompanyFileHash(@Param("filehash") String filehash,@Param("fileData")String fileData,@Param("userid") String userid);
 
     //更新评委信息
     @Update("update approver set info = #{info} where userid = #{id}")

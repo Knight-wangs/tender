@@ -12,19 +12,22 @@ public class Project {
     String area;
     String assessorFile;
     String assessorFileHash;
+    String assessorFileData;
     Date opentime;
     String openTimeData;
     Date tenderTime;
     String state;
     String resultsFile;
     String resultsFileHash;
+    String resultsFileData;
     String contractFile;
     String contractFileHash;
+    String contractFileData;
 
     public Project() {
     }
 
-    public Project(Integer id, String name, String introductFile, String introductFileHash, String assessor, String industry, String area, String assessorFile, String assessorFileHash, Date opentime, String openTimeData, Date tenderTime, String state, String resultsFile, String resultsFileHash, String contractFile, String contractFileHash) {
+    public Project(Integer id, String name, String introductFile, String introductFileHash, String assessor, String industry, String area, String assessorFile, String assessorFileHash, String assessorFileData, Date opentime, String openTimeData, Date tenderTime, String state, String resultsFile, String resultsFileHash, String resultsFileData, String contractFile, String contractFileHash, String contractFileData) {
         this.id = id;
         this.name = name;
         this.introductFile = introductFile;
@@ -34,14 +37,17 @@ public class Project {
         this.area = area;
         this.assessorFile = assessorFile;
         this.assessorFileHash = assessorFileHash;
+        this.assessorFileData = assessorFileData;
         this.opentime = opentime;
         this.openTimeData = openTimeData;
         this.tenderTime = tenderTime;
         this.state = state;
         this.resultsFile = resultsFile;
         this.resultsFileHash = resultsFileHash;
+        this.resultsFileData = resultsFileData;
         this.contractFile = contractFile;
         this.contractFileHash = contractFileHash;
+        this.contractFileData = contractFileData;
     }
 
     public Project(String name, String assessor, String industry, String area, Date opentime, Date tenderTime, String state) {
@@ -189,5 +195,29 @@ public class Project {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getAssessorFileData() {
+        return assessorFileData;
+    }
+
+    public void setAssessorFileData(String assessorFileData) {
+        this.assessorFileData = assessorFileData;
+    }
+
+    public String getResultsFileData() {
+        return resultsFileData;
+    }
+
+    public void setResultsFileData(String resultsFileData) {
+        this.resultsFileData = resultsFileData;
+    }
+
+    public String getContractFileData() {
+        return contractFileData;
+    }
+
+    public void setContractFileData(String contractFileData) {
+        this.contractFileData = contractFileData;
     }
 }

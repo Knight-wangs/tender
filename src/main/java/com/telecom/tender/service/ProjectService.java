@@ -30,9 +30,9 @@ public interface ProjectService {
     //保存项目文件
     public int saveProjectFile(String filePath,String id,String fileType);
     //保存项目文件hash
-    public int saveProjectFileHash(String fileHash,String id,String fileType);
+    public int saveProjectFileHash(String fileHash,String fileData,String id,String fileType);
 
-    int uploadBidderForm(String projectid,String bidderid,String tenderFile,String tenderFileHash);
+    int uploadBidderForm(String projectid,String bidderid,String tenderFile,String tenderFileHash,String tenderFileData);
     //评委点评
     int evaluation(String approvalId, String projectId,  String techScore,
                    String bussScore, String serverScore,String totalScore, String option,int state);
@@ -54,4 +54,6 @@ public interface ProjectService {
     ApprovalForm getApprovalForm( String approvalid, String projectid);
     //下载投标方项目标书
     ResponseEntity<byte[]> downloadBidderFile(String projectId,String bidderId);
+    //查询保存文件上链信息
+    String getFileData(String filedata);
 }
