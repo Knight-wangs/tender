@@ -1,9 +1,6 @@
 package com.telecom.tender.dao;
 
-import com.telecom.tender.model.ApprovalForm;
-import com.telecom.tender.model.BidderForm;
-import com.telecom.tender.model.BidderInfo;
-import com.telecom.tender.model.Project;
+import com.telecom.tender.model.*;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -135,4 +132,7 @@ public interface ProjectMapper {
     //根据项目id查询所有评委意见
     @Select("select * from approvalform where projectid= #{projectid}")
     List<ApprovalForm> getAllOpinionByProjectId(@Param("projectid") String projectid);
+    //查询所有评委
+    @Select("select userid,username from approver")
+    List<Approver> getAllApprover();
 }

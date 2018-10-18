@@ -33,19 +33,26 @@ import java.util.List;
 @Controller
 @RequestMapping("/project")
 public class ProjectControl {
-    private final String INTRODUCTFILEPATH="E:\\电信研究所\\test";
-    private final String ASSESSORFILEPATH = "E:\\电信研究所\\test";
-    private final String CONTRACTFILEPATH = "E:\\电信研究所\\test";
-    private final String RESULTFILEPATH = "E:\\电信研究所\\test";
-    private final String QUALIFICATIONFILEPATH = "E:\\电信研究所\\test";
-    private final String BIDDERFORM = "E:\\电信研究所\\test";
+//    private final String INTRODUCTFILEPATH="E:\\电信研究所\\test";
+//    private final String ASSESSORFILEPATH = "E:\\电信研究所\\test";
+//    private final String CONTRACTFILEPATH = "E:\\电信研究所\\test";
+//    private final String RESULTFILEPATH = "E:\\电信研究所\\test";
+//    private final String QUALIFICATIONFILEPATH = "E:\\电信研究所\\test";
+//    private final String BIDDERFORM = "E:\\电信研究所\\test";
 
-//    private final String INTRODUCTFILEPATH="/root/tender/introfile";
-//    private final String ASSESSORFILEPATH = "/root/tender/assessorfile";
-//    private final String CONTRACTFILEPATH = "/root/tender/contractfile";
-//    private final String RESULTFILEPATH = "/root/tender/resultfile";
-//    private final String QUALIFICATIONFILEPATH = "/root/tender/qualifacationfile";
-//    private final String BIDDERFORM = "/root/tender/bidderfile";
+//    private final String INTRODUCTFILEPATH="D:\\电信研究所\\test";
+//    private final String ASSESSORFILEPATH = "D:\\电信研究所\\test";
+//    private final String CONTRACTFILEPATH = "D:\\电信研究所\\test";
+//    private final String RESULTFILEPATH = "D:\\电信研究所\\test";
+//    private final String QUALIFICATIONFILEPATH = "D:\\电信研究所\\test";
+//    private final String BIDDERFORM = "D:\\电信研究所\\test";
+
+    private final String INTRODUCTFILEPATH="/root/tender/introfile";
+    private final String ASSESSORFILEPATH = "/root/tender/assessorfile";
+    private final String CONTRACTFILEPATH = "/root/tender/contractfile";
+    private final String RESULTFILEPATH = "/root/tender/resultfile";
+    private final String QUALIFICATIONFILEPATH = "/root/tender/qualifacationfile";
+    private final String BIDDERFORM = "/root/tender/bidderfile";
 
     private final static String SUCCESS = "success";
     private final static String FAIL = "fail";
@@ -530,6 +537,65 @@ public class ProjectControl {
     @ResponseBody
     public ResponseEntity<byte[]> downTenderFile(String projectId,String bidderId){
         return projectService.downloadBidderFile(projectId,bidderId);
+    }
+
+    @RequestMapping("/addprofessor")
+    @ResponseBody
+    public String addprofessor(String expertId,String projectId){
+        try {
+            depositService.addprofessor(expertId,Integer.valueOf(projectId));
+            return SUCCESS;
+        }
+        catch (Exception e){
+            return FAIL;
+        }
+    }
+    @RequestMapping("/delprofessor")
+    @ResponseBody
+    public String delprofessor(String expertId,String projectId){
+        try {
+            depositService.delprofessor(expertId,Integer.valueOf(projectId));
+            return SUCCESS;
+        }
+        catch (Exception e){
+            return FAIL;
+        }
+    }
+
+    @RequestMapping("/selectprofessor")
+    @ResponseBody
+    public String[] selectprofessor(Integer num,String projectId){
+
+        try {
+            JSONObject result = depositService.selectprofessor(num,Integer.valueOf(projectId));
+            String data = result.getString("data");
+            String[]  professorList = data.split(",");
+            return professorList;
+        }
+        catch (Exception e){
+            return null;
+        }
+    }
+
+    @RequestMapping("/allprofessor")
+    @ResponseBody
+    public String[] allprofessor(String projectId){
+
+        try {
+            JSONObject result = depositService.allprofessor(Integer.valueOf(projectId));
+            String data = result.getString("data");
+            String[]  professorList = data.split(",");
+            return professorList;
+        }
+        catch (Exception e){
+            return null;
+        }
+    }
+
+    @RequestMapping("/getAllApprover")
+    @ResponseBody
+    public List<Approver> getAllApprover(String projectId) {
+        return projectService.getAllApprover();
     }
 
 

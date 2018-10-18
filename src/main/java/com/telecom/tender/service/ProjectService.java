@@ -2,6 +2,7 @@ package com.telecom.tender.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.telecom.tender.model.ApprovalForm;
+import com.telecom.tender.model.Approver;
 import com.telecom.tender.model.BidderInfo;
 import com.telecom.tender.model.Project;
 import org.springframework.http.ResponseEntity;
@@ -56,4 +57,6 @@ public interface ProjectService {
     ResponseEntity<byte[]> downloadBidderFile(String projectId,String bidderId);
     //查询保存文件上链信息
     String getFileData(String filedata);
+    //查询所有的评委
+    List<Approver> getAllApprover();
 }

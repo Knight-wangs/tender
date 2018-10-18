@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.telecom.tender.dao.AccountMapper;
 import com.telecom.tender.dao.ProjectMapper;
-import com.telecom.tender.model.ApprovalForm;
-import com.telecom.tender.model.BidderInfo;
-import com.telecom.tender.model.Project;
-import com.telecom.tender.model.ProjectFileType;
+import com.telecom.tender.model.*;
 import com.telecom.tender.service.ProjectService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -260,13 +257,26 @@ public class ProjectServiceImpl implements ProjectService {
         String hash = data.getString("transactionId");
         JSONObject evidence = depositService.getEvidengceDetail(id);
         JSONObject evidenceData = (JSONObject) evidence.get("data");
-        if (evidence!=null && evidenceData!=null && evidenceData.get("transactionId").equals(hash)){
-            result.put("notChanged",true);
+        if (evidence!=null && evidenceData!=null ){
+            JSONObject verifyData = depositService.verify(id,evidenceData.getString("evJson"));
+            if (verifyData.getString("msg").equals("success")) {
+                result.put("notChanged", true);
+            }
+            else {
+                result.put("notChanged",false);
+            }
         }
         else {
             result.put("notChanged",false);
         }
-        result.put("data",evidenceData);
+        JSONObject chainData = depositService.chainblock(hash).getJSONObject("data");
+
+        JSONObject showChainData = new JSONObject();
+        showChainData.put("number",chainData.getString("number"));
+        showChainData.put("blockhash",chainData.getString("hash"));
+        showChainData.put("timestamp",chainData.getString("timestamp"));
+        showChainData.put("transactionshash",chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
+        result.put("chaindata",showChainData);
         return result;
     }
 
@@ -370,11 +380,18 @@ public class ProjectServiceImpl implements ProjectService {
         }
         JSONObject evidenceJSON = JSONObject.parseObject(evidenceData);
         String transactionId = evidenceJSON.getJSONObject("data").getString("transactionId");
-        JSONObject chainData = depositService.chainblock(transactionId);
-        result.put("chaindata",chainData.getJSONObject("data"));
+        JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
+        JSONObject showChainData = new JSONObject();
+        showChainData.put("number",chainData.getString("number"));
+        showChainData.put("blockhash",chainData.getString("hash"));
+        showChainData.put("timestamp",chainData.getString("timestamp"));
+        showChainData.put("transactionshash",chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
+        result.put("chaindata",showChainData);
         return result;
     }
 
-
-
+    @Override
+    public List<Approver> getAllApprover() {
+        return projectMapper.getAllApprover();
+    }
 }
