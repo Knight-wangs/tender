@@ -147,6 +147,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public JSONObject checkFileHash(String id, String fileType) {
         String PATH = "";
+        Project project = projectMapper.getProjectById(id);
         if (fileType.equals(ProjectFileType.INTRODUCE)){
             PATH = projectMapper.getIntroFilePath(id);
             try {
@@ -155,7 +156,8 @@ public class ProjectServiceImpl implements ProjectService {
                 try {
                     MultipartFile multipartFile = new MockMultipartFile(file.getName(),fileInputStream);
                     String storeHash = projectMapper.getintroFileHash(id);
-                    return checkFile(multipartFile,storeHash);
+                    String evidengceData = project.getIntroFileData();
+                    return checkFile(multipartFile,storeHash,evidengceData);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -171,7 +173,8 @@ public class ProjectServiceImpl implements ProjectService {
                 try {
                     MultipartFile multipartFile = new MockMultipartFile(file.getName(),fileInputStream);
                     String storeHash = projectMapper.getAssessorFileHash(id);
-                    return checkFile(multipartFile,storeHash);
+                    String evidengceData = project.getAssessorFileData();
+                    return checkFile(multipartFile,storeHash,evidengceData);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -187,7 +190,8 @@ public class ProjectServiceImpl implements ProjectService {
                 try {
                     MultipartFile multipartFile = new MockMultipartFile(file.getName(),fileInputStream);
                     String storeHash = projectMapper.getResultsFileHash(id);
-                    return checkFile(multipartFile,storeHash);
+                    String evidengceData = project.getResultsFileData();
+                    return checkFile(multipartFile,storeHash,evidengceData);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -203,7 +207,8 @@ public class ProjectServiceImpl implements ProjectService {
                 try {
                     MultipartFile multipartFile = new MockMultipartFile(file.getName(),fileInputStream);
                     String storeHash = projectMapper.getContractFileHash(id);
-                    return checkFile(multipartFile,storeHash);
+                    String evidengceData = project.getContractFileData();
+                    return checkFile(multipartFile,storeHash,evidengceData);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -223,7 +228,8 @@ public class ProjectServiceImpl implements ProjectService {
             try {
                 MultipartFile multipartFile = new MockMultipartFile(file.getName(),fileInputStream);
                 String storeHash = accountMapper.getBidderFileHash(id);
-                return checkFile(multipartFile,storeHash);
+                String fileData = accountMapper.getBidderFileData(id);
+                return checkFile(multipartFile,storeHash,fileData);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -350,7 +356,7 @@ public class ProjectServiceImpl implements ProjectService {
         return result.toJSONString();
     }
 
-    private JSONObject checkFile(MultipartFile multipartFile, String storeHash){
+    private JSONObject checkFile(MultipartFile multipartFile, String storeHash,String evidenceData){
         JSONObject result = new JSONObject();
         result.put("notChanged",false);
         result.put("originalHash",storeHash);
@@ -362,6 +368,10 @@ public class ProjectServiceImpl implements ProjectService {
             }
             result.put("chainHash",hash);
         }
+        JSONObject evidenceJSON = JSONObject.parseObject(evidenceData);
+        String transactionId = evidenceJSON.getJSONObject("data").getString("transactionId");
+        JSONObject chainData = depositService.chainblock(transactionId);
+        result.put("chaindata",chainData.getJSONObject("data"));
         return result;
     }
 

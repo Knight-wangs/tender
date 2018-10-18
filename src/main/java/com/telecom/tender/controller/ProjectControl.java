@@ -33,19 +33,19 @@ import java.util.List;
 @Controller
 @RequestMapping("/project")
 public class ProjectControl {
-//    private final String INTRODUCTFILEPATH="E:\\电信研究所\\test";
-//    private final String ASSESSORFILEPATH = "E:\\电信研究所\\test";
-//    private final String CONTRACTFILEPATH = "E:\\电信研究所\\test";
-//    private final String RESULTFILEPATH = "E:\\电信研究所\\test";
-//    private final String QUALIFICATIONFILEPATH = "E:\\电信研究所\\test";
-//    private final String BIDDERFORM = "E:\\电信研究所\\test";
+    private final String INTRODUCTFILEPATH="E:\\电信研究所\\test";
+    private final String ASSESSORFILEPATH = "E:\\电信研究所\\test";
+    private final String CONTRACTFILEPATH = "E:\\电信研究所\\test";
+    private final String RESULTFILEPATH = "E:\\电信研究所\\test";
+    private final String QUALIFICATIONFILEPATH = "E:\\电信研究所\\test";
+    private final String BIDDERFORM = "E:\\电信研究所\\test";
 
-    private final String INTRODUCTFILEPATH="/root/tender/introfile";
-    private final String ASSESSORFILEPATH = "/root/tender/assessorfile";
-    private final String CONTRACTFILEPATH = "/root/tender/contractfile";
-    private final String RESULTFILEPATH = "/root/tender/resultfile";
-    private final String QUALIFICATIONFILEPATH = "/root/tender/qualifacationfile";
-    private final String BIDDERFORM = "/root/tender/bidderfile";
+//    private final String INTRODUCTFILEPATH="/root/tender/introfile";
+//    private final String ASSESSORFILEPATH = "/root/tender/assessorfile";
+//    private final String CONTRACTFILEPATH = "/root/tender/contractfile";
+//    private final String RESULTFILEPATH = "/root/tender/resultfile";
+//    private final String QUALIFICATIONFILEPATH = "/root/tender/qualifacationfile";
+//    private final String BIDDERFORM = "/root/tender/bidderfile";
 
     private final static String SUCCESS = "success";
     private final static String FAIL = "fail";

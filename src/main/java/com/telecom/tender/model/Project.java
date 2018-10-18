@@ -5,8 +5,9 @@ import java.util.Date;
 public class Project {
     Integer id;
     String name;
-    private String introductFile;
-    private String IntroductFileHash;
+    private String introFile;
+    private String introFileHash;
+    private String introFileData;
     String assessor;
     String industry;
     String area;
@@ -27,11 +28,12 @@ public class Project {
     public Project() {
     }
 
-    public Project(Integer id, String name, String introductFile, String introductFileHash, String assessor, String industry, String area, String assessorFile, String assessorFileHash, String assessorFileData, Date opentime, String openTimeData, Date tenderTime, String state, String resultsFile, String resultsFileHash, String resultsFileData, String contractFile, String contractFileHash, String contractFileData) {
+    public Project(Integer id, String name, String introFile, String introFileHash, String introFileData, String assessor, String industry, String area, String assessorFile, String assessorFileHash, String assessorFileData, Date opentime, String openTimeData, Date tenderTime, String state, String resultsFile, String resultsFileHash, String resultsFileData, String contractFile, String contractFileHash, String contractFileData) {
         this.id = id;
         this.name = name;
-        this.introductFile = introductFile;
-        IntroductFileHash = introductFileHash;
+        this.introFile = introFile;
+        this.introFileHash = introFileHash;
+        this.introFileData = introFileData;
         this.assessor = assessor;
         this.industry = industry;
         this.area = area;
@@ -157,20 +159,28 @@ public class Project {
         this.opentime = opentime;
     }
 
-    public String getIntroductFile() {
-        return introductFile;
+    public String getIntroFile() {
+        return introFile;
     }
 
-    public void setIntroductFile(String introductFile) {
-        this.introductFile = introductFile;
+    public void setIntroFile(String introFile) {
+        this.introFile = introFile;
     }
 
-    public String getIntroductFileHash() {
-        return IntroductFileHash;
+    public String getIntroFileHash() {
+        return introFileHash;
     }
 
-    public void setIntroductFileHash(String introductFileHash) {
-        IntroductFileHash = introductFileHash;
+    public void setIntroFileHash(String introFileHash) {
+        this.introFileHash = introFileHash;
+    }
+
+    public String getIntroFileData() {
+        return introFileData;
+    }
+
+    public void setIntroFileData(String introFileData) {
+        this.introFileData = introFileData;
     }
 
     public String getOpenTimeData() {
