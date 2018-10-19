@@ -1,5 +1,6 @@
 package com.telecom.tender.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.telecom.tender.model.*;
 import com.telecom.tender.service.impl.AccountServiceImpl;
@@ -564,32 +565,64 @@ public class ProjectControl {
 
     @RequestMapping("/selectprofessor")
     @ResponseBody
-    public String[] selectprofessor(Integer num,String projectId){
-
-        try {
+    public JSONObject selectprofessor(Integer num,String projectId){
+        JSONObject resultJSON = new JSONObject();
+        JSONObject chainData = new JSONObject();
+        resultJSON.put("projectId",projectId);
+        SelectedApprover selectedApprover = projectService.getSelectedApprover(projectId);
+        if (selectedApprover == null){
             JSONObject result = depositService.selectprofessor(num,Integer.valueOf(projectId));
-            String data = result.getString("data");
-            String[]  professorList = data.split(",");
-            return professorList;
+            JSONArray professorList = result.getJSONArray("data");
+            chainData = projectService.getSelectedApproverChainData(projectId,professorList.toJSONString());
+            projectService.setSelectedApprover(projectId,professorList.toJSONString(),chainData.toJSONString());
+            resultJSON.put("professorList",professorList);
         }
-        catch (Exception e){
-            return null;
+        else {
+            resultJSON.put("professorList",JSONArray.parse(selectedApprover.getProfessorList()));
         }
+        return resultJSON;
     }
+    @RequestMapping("/selectprofessorChaindata")
+    @ResponseBody
+    public JSONObject selectprofessorChaindata(String projectId){
+        SelectedApprover selectedApprover = projectService.getSelectedApprover(projectId);
+        JSONObject resultJSON = new JSONObject();
 
+        if (selectedApprover==null){
+            resultJSON.put("err","未筛选评委");
+        }
+        else {
+            String evidenceresult = selectedApprover.getChainData();
+            JSONObject evidenceresultJson = JSONObject.parseObject(evidenceresult);
+            String transactionId = evidenceresultJson.getJSONObject("data").getString("transactionId");
+            JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
+            if (chainData==null){
+                resultJSON.put("msg","未出块，请稍后重试");
+            }
+            else {
+                JSONObject showChainData = new JSONObject();
+                showChainData.put("number", chainData.getString("number"));
+                showChainData.put("blockhash", chainData.getString("hash"));
+                showChainData.put("timestamp", chainData.getString("timestamp"));
+                showChainData.put("transactionshash", chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
+                resultJSON.put("chaindata", showChainData);
+            }
+        }
+        return resultJSON;
+    }
     @RequestMapping("/allprofessor")
     @ResponseBody
-    public String[] allprofessor(String projectId){
-
+    public JSONObject allprofessor(String projectId){
+        JSONObject resultJSON = new JSONObject();
         try {
             JSONObject result = depositService.allprofessor(Integer.valueOf(projectId));
-            String data = result.getString("data");
-            String[]  professorList = data.split(",");
-            return professorList;
+            JSONArray professorList = result.getJSONArray("data");
+            resultJSON.put("professorList",professorList);
         }
         catch (Exception e){
-            return null;
+           e.printStackTrace();
         }
+        return resultJSON;
     }
 
     @RequestMapping("/getAllApprover")

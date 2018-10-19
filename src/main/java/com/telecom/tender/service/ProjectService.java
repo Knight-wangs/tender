@@ -1,10 +1,7 @@
 package com.telecom.tender.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.telecom.tender.model.ApprovalForm;
-import com.telecom.tender.model.Approver;
-import com.telecom.tender.model.BidderInfo;
-import com.telecom.tender.model.Project;
+import com.telecom.tender.model.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Date;
@@ -59,4 +56,11 @@ public interface ProjectService {
     String getFileData(String filedata);
     //查询所有的评委
     List<Approver> getAllApprover();
+    //设置项目筛选评委信息
+    int setSelectedApprover(String projectId,String professorList,String chainData);
+    //查询项目评委信息
+    SelectedApprover getSelectedApprover(String projectId);
+    //项目筛选评委信息上链
+    JSONObject getSelectedApproverChainData(String projectId,String professorList);
+
 }

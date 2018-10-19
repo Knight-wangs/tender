@@ -394,4 +394,27 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Approver> getAllApprover() {
         return projectMapper.getAllApprover();
     }
+
+    @Override
+    public int setSelectedApprover(String projectId, String professorList, String chainData) {
+        return projectMapper.setSelectedApprover(projectId, professorList, chainData);
+    }
+
+    @Override
+    public SelectedApprover getSelectedApprover(String projectId) {
+        return projectMapper.getSelectedApprover(projectId);
+    }
+
+    @Override
+    public JSONObject getSelectedApproverChainData(String projectId, String professorList) {
+        JSONObject ev_json = new JSONObject();
+        JSONObject file_json = new JSONObject();
+        ev_json.put("专家列表",professorList);
+        ev_json.put("项目ID",projectId);
+        file_json.put("files",new ArrayList<String>());
+        JSONObject evidenceresult = depositService.evidencestore("项目专家列表存证","招投标平台",ev_json.toString(),file_json.toString());
+//        String transactionId = evidenceresult.getJSONObject("data").getString("transactionId");
+//        JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
+        return evidenceresult;
+    }
 }
