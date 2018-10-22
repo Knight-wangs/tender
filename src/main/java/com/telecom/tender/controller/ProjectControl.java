@@ -631,5 +631,16 @@ public class ProjectControl {
         return projectService.getAllApprover();
     }
 
+    @RequestMapping("/getOpenTimeResult")
+    @ResponseBody
+    public JSONObject getOpenTimeResult(String projectId){
+        return projectService.getOpenTimeResult(projectId);
+    }
+
+    @RequestMapping("/getOpenTimeChainData")
+    @ResponseBody
+    public JSONObject getOpenTimeChainData(String projectId){
+        return projectService.getOpenTimeTranChainData(projectId);
+    }
 
 }

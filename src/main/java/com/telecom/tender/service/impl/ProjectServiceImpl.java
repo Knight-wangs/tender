@@ -417,4 +417,28 @@ public class ProjectServiceImpl implements ProjectService {
 //        JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
         return evidenceresult;
     }
+
+    @Override
+    public JSONObject getOpenTimeResult(String projectId) {
+        Project project = projectMapper.getProjectById(projectId);
+        JSONObject openTimeData = JSONObject.parseObject(project.getOpenTimeData());
+        String evID = openTimeData.getJSONObject("data").getString("evID");
+        return depositService.verifybtime(evID);
+    }
+
+    @Override
+    public JSONObject getOpenTimeTranChainData(String projectId) {
+        JSONObject result = new JSONObject();
+        Project project = projectMapper.getProjectById(projectId);
+        JSONObject openTimeData = JSONObject.parseObject(project.getOpenTimeData());
+        String transactionId = openTimeData.getJSONObject("data").getString("transactionId");
+        JSONObject chainData = depositService.chainblock(transactionId);
+        JSONObject showChainData = new JSONObject();
+        showChainData.put("number",chainData.getString("number"));
+        showChainData.put("blockhash",chainData.getString("hash"));
+        showChainData.put("timestamp",chainData.getString("timestamp"));
+        showChainData.put("transactionshash",chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
+        result.put("chaindata",showChainData);
+        return result;
+    }
 }

@@ -62,5 +62,9 @@ public interface ProjectService {
     SelectedApprover getSelectedApprover(String projectId);
     //项目筛选评委信息上链
     JSONObject getSelectedApproverChainData(String projectId,String professorList);
+    //查询项目开标时间智能合约所自动执行信息
+    JSONObject getOpenTimeResult(String projectId);
+    //查询项目开标时间智能合约链上信息
+    JSONObject getOpenTimeTranChainData(String projectId);
 
 }
