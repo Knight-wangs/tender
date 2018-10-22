@@ -16,6 +16,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -479,20 +480,32 @@ public class ProjectControl {
     }
     @RequestMapping("/checkProjectFileHash")
     @ResponseBody
-    public JSONObject checkProjectFileHash(String id,String fileType){
-        return projectService.checkFileHash(id,fileType);
+    public JSONArray checkProjectFileHash(String id,String fileType){
+        JSONArray resultList = new JSONArray();
+        resultList.add(projectService.checkFileHash(id,fileType));
+        return resultList;
     }
     @RequestMapping("/checkBidderFileHash")
     @ResponseBody
-    public JSONObject checkBidderFileHash(String id){
-        return projectService.checkBidderFile(id);
+    public JSONArray checkBidderFileHash(String id){
+        JSONArray resultList = new JSONArray();
+        resultList.add(projectService.checkBidderFile(id));
+        return resultList;
     }
     @RequestMapping("/checkApprovalViewHash")
     @ResponseBody
-    public JSONObject checkApprovalViewHash(String approvalId,String projectId){
-        return projectService.checkApprovalHash(projectId,approvalId);
+    public JSONArray checkApprovalViewHash(String approvalId,String projectId){
+        JSONArray resultList = new JSONArray();
+        resultList.add(projectService.checkApprovalHash(projectId,approvalId));
+        return resultList;
     }
-
+    @RequestMapping("/checkTenderFile")
+    @ResponseBody
+    public JSONArray checkTenderFile(String projectId,String bidderId){
+        JSONArray resultList = new JSONArray();
+        resultList.add(projectService.checkTenderFile(projectId,bidderId));
+        return resultList;
+    }
     @RequestMapping("/getAllProject")
     @ResponseBody
     public List<Project> getAllProject(){
@@ -633,14 +646,18 @@ public class ProjectControl {
 
     @RequestMapping("/getOpenTimeResult")
     @ResponseBody
-    public JSONObject getOpenTimeResult(String projectId){
-        return projectService.getOpenTimeResult(projectId);
+    public JSONArray getOpenTimeResult(String projectId){
+        JSONArray resultList = new JSONArray();
+        resultList.add(projectService.getOpenTimeResult(projectId));
+        return resultList;
     }
 
     @RequestMapping("/getOpenTimeChainData")
     @ResponseBody
-    public JSONObject getOpenTimeChainData(String projectId){
-        return projectService.getOpenTimeTranChainData(projectId);
+    public JSONArray getOpenTimeChainData(String projectId){
+        JSONArray resultList = new JSONArray();
+        resultList.add(projectService.getOpenTimeTranChainData(projectId));
+        return resultList;
     }
 
 }

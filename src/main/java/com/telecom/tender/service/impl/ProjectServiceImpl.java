@@ -269,14 +269,15 @@ public class ProjectServiceImpl implements ProjectService {
         else {
             result.put("notChanged",false);
         }
-        JSONObject chainData = depositService.chainblock(hash).getJSONObject("data");
-
-        JSONObject showChainData = new JSONObject();
-        showChainData.put("number",chainData.getString("number"));
-        showChainData.put("blockhash",chainData.getString("hash"));
-        showChainData.put("timestamp",chainData.getString("timestamp"));
-        showChainData.put("transactionshash",chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
-        result.put("chaindata",showChainData);
+        if (StringUtils.isNotBlank(hash)) {
+            JSONObject chainData = depositService.chainblock(hash).getJSONObject("data");
+            JSONObject showChainData = new JSONObject();
+            showChainData.put("number", chainData.getString("number"));
+            showChainData.put("blockhash", chainData.getString("hash"));
+            showChainData.put("timestamp", chainData.getString("timestamp"));
+            showChainData.put("transactionshash", chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
+            result.put("chaindata", showChainData);
+        }
         return result;
     }
 
@@ -378,15 +379,17 @@ public class ProjectServiceImpl implements ProjectService {
             }
             result.put("chainHash",hash);
         }
-        JSONObject evidenceJSON = JSONObject.parseObject(evidenceData);
-        String transactionId = evidenceJSON.getJSONObject("data").getString("transactionId");
-        JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
-        JSONObject showChainData = new JSONObject();
-        showChainData.put("number",chainData.getString("number"));
-        showChainData.put("blockhash",chainData.getString("hash"));
-        showChainData.put("timestamp",chainData.getString("timestamp"));
-        showChainData.put("transactionshash",chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
-        result.put("chaindata",showChainData);
+        if (StringUtils.isNotBlank(evidenceData)) {
+            JSONObject evidenceJSON = JSONObject.parseObject(evidenceData);
+            String transactionId = evidenceJSON.getJSONObject("data").getString("transactionId");
+            JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
+            JSONObject showChainData = new JSONObject();
+            showChainData.put("number", chainData.getString("number"));
+            showChainData.put("blockhash", chainData.getString("hash"));
+            showChainData.put("timestamp", chainData.getString("timestamp"));
+            showChainData.put("transactionshash", chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
+            result.put("chaindata", showChainData);
+        }
         return result;
     }
 
@@ -430,15 +433,40 @@ public class ProjectServiceImpl implements ProjectService {
     public JSONObject getOpenTimeTranChainData(String projectId) {
         JSONObject result = new JSONObject();
         Project project = projectMapper.getProjectById(projectId);
-        JSONObject openTimeData = JSONObject.parseObject(project.getOpenTimeData());
-        String transactionId = openTimeData.getJSONObject("data").getString("transactionId");
-        JSONObject chainData = depositService.chainblock(transactionId);
-        JSONObject showChainData = new JSONObject();
-        showChainData.put("number",chainData.getString("number"));
-        showChainData.put("blockhash",chainData.getString("hash"));
-        showChainData.put("timestamp",chainData.getString("timestamp"));
-        showChainData.put("transactionshash",chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
-        result.put("chaindata",showChainData);
+        if(StringUtils.isNotBlank(project.getOpenTimeData())) {
+            JSONObject openTimeData = JSONObject.parseObject(project.getOpenTimeData());
+            String transactionId = openTimeData.getJSONObject("data").getString("transactionId");
+            JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
+            JSONObject showChainData = new JSONObject();
+            showChainData.put("number", chainData.getString("number"));
+            showChainData.put("blockhash", chainData.getString("hash"));
+            showChainData.put("timestamp", chainData.getString("timestamp"));
+            showChainData.put("transactionshash", chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
+            result.put("chaindata", showChainData);
+        }
+        return result;
+    }
+
+    @Override
+    public JSONObject checkTenderFile(String projectId, String bidderId) {
+        JSONObject result = new JSONObject();
+        BidderForm bidderForm = projectMapper.getBidderForm(projectId,bidderId);
+        String PATH = bidderForm.getTenderFile();
+        if (StringUtils.isNotBlank(PATH))
+        try {
+            FileInputStream fileInputStream = new FileInputStream(PATH);
+            File file = new File(PATH);
+            try {
+                MultipartFile multipartFile = new MockMultipartFile(file.getName(),fileInputStream);
+                String tenderFileHash = bidderForm.getTenderFileHash();
+                String tenderFileData = bidderForm.getTenderFileData();
+                return checkFile(multipartFile,tenderFileHash,tenderFileData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 }

@@ -66,5 +66,7 @@ public interface ProjectService {
     JSONObject getOpenTimeResult(String projectId);
     //查询项目开标时间智能合约链上信息
     JSONObject getOpenTimeTranChainData(String projectId);
+    //检查投标人投标文件
+    public JSONObject checkTenderFile(String projectId,String bidderId);
 
 }
