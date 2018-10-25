@@ -143,7 +143,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public JSONObject checkFileHash(String id, String fileType) {
-        String PATH = "";
+        String PATH ;
         Project project = projectMapper.getProjectById(id);
         if (fileType.equals(ProjectFileType.INTRODUCE)){
             PATH = projectMapper.getIntroFilePath(id);
@@ -257,7 +257,7 @@ public class ProjectServiceImpl implements ProjectService {
         String hash = data.getString("transactionId");
         JSONObject evidence = depositService.getEvidengceDetail(id);
         JSONObject evidenceData = (JSONObject) evidence.get("data");
-        if (evidence!=null && evidenceData!=null ){
+        if (evidenceData!=null ){
             JSONObject verifyData = depositService.verify(id,evidenceData.getString("evJson"));
             if (verifyData.getString("msg").equals("success")) {
                 result.put("notChanged", true);
@@ -273,7 +273,7 @@ public class ProjectServiceImpl implements ProjectService {
             JSONObject chainData = depositService.chainblock(hash).getJSONObject("data");
             JSONObject showChainData = new JSONObject();
             showChainData.put("number", chainData.getString("number"));
-            showChainData.put("blockhash", chainData.getString("hash"));
+            showChainData.put("evidenceaddress", "http://123.207.167.245/evchain/app/evidence/store");
             showChainData.put("timestamp", chainData.getString("timestamp"));
             showChainData.put("transactionshash", chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
             result.put("chaindata", showChainData);
@@ -385,7 +385,7 @@ public class ProjectServiceImpl implements ProjectService {
             JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
             JSONObject showChainData = new JSONObject();
             showChainData.put("number", chainData.getString("number"));
-            showChainData.put("blockhash", chainData.getString("hash"));
+            showChainData.put("evidenceaddress", "http://123.207.167.245/storage/api/files/upload");
             showChainData.put("timestamp", chainData.getString("timestamp"));
             showChainData.put("transactionshash", chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
             result.put("chaindata", showChainData);
@@ -439,7 +439,7 @@ public class ProjectServiceImpl implements ProjectService {
             JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
             JSONObject showChainData = new JSONObject();
             showChainData.put("number", chainData.getString("number"));
-            showChainData.put("blockhash", chainData.getString("hash"));
+            showChainData.put("evidenceaddress", "http://123.207.167.245/evchain/app/evidence/setbtime");
             showChainData.put("timestamp", chainData.getString("timestamp"));
             showChainData.put("transactionshash", chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
             result.put("chaindata", showChainData);
