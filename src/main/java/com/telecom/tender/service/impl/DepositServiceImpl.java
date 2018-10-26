@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -97,13 +98,13 @@ public class DepositServiceImpl implements DepositService {
     }
 
     @Override
-    public JSONObject setBTime(long timeStamp) {
+    public JSONObject setBTime(long timeStamp,String evID) {
         String url = URL+"/evchain/app/evidence/setbtime";
         Map<String,Object> param = new HashMap<>();
         Map<String,Object> header = new HashMap<>();
         header.put("appId",APPID);
         header.put("appKey",TOKEN);
-//        param.put("evID",evID);
+        param.put("evID",evID);
         param.put("timestamp",timeStamp);
         String result = Requests.post(url).headers(header).params(param).send().readToText();
         return JSONObject.parseObject(result);
@@ -129,6 +130,32 @@ public class DepositServiceImpl implements DepositService {
         header.put("appId",APPID);
         header.put("appKey",TOKEN);
         param.put("evID",evID);
+        String result = Requests.post(url).headers(header).params(param).send().readToText();
+        return JSONObject.parseObject(result);
+    }
+
+    @Override
+    public JSONObject makeprofessor(Integer num, Integer progectID, String experts) {
+        String url = URL+"/evchain/app/evidence/makeprofessor";
+        Map<String, Object> param = new HashMap<>();
+        Map<String, String> header = new HashMap<>();
+        header.put("appId",APPID);
+        header.put("appKey",TOKEN);
+        param.put("num",num);
+        param.put("experts",experts);
+        param.put("progectID",progectID);
+        String result = Requests.post(url).headers(header).params(param).send().readToText();
+        return JSONObject.parseObject(result);
+    }
+
+    @Override
+    public JSONObject getselectprofessor(Integer progectID) {
+        String url = URL+"/evchain/app/evidence/getselectprofessor";
+        Map<String, Object> param = new HashMap<>();
+        Map<String, String> header = new HashMap<>();
+        header.put("appId",APPID);
+        header.put("appKey",TOKEN);
+        param.put("progectID",progectID);
         String result = Requests.post(url).headers(header).params(param).send().readToText();
         return JSONObject.parseObject(result);
     }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public interface DepositService {
     JSONObject upload(MultipartFile file);
@@ -20,7 +21,7 @@ public interface DepositService {
 
     JSONObject verify(String evid, String evjson);
 
-    JSONObject setBTime(long timeStamp);
+    JSONObject setBTime(long timeStamp,String evID);
 
     JSONObject getBTime(String evID);
 
@@ -33,6 +34,10 @@ public interface DepositService {
     JSONObject selectprofessor(Integer num,Integer progectID);
 
     JSONObject allprofessor(Integer progectID);
+
+    JSONObject makeprofessor(Integer num, Integer progectID, String experts);
+
+    JSONObject getselectprofessor(Integer progectID);
 
     JSONObject chainblock(String transactionId);
 }

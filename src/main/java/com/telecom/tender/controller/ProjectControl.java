@@ -6,8 +6,6 @@ import com.telecom.tender.service.impl.AccountServiceImpl;
 import com.telecom.tender.service.impl.DepositServiceImpl;
 import com.telecom.tender.service.impl.ProjectServiceImpl;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.utils.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
@@ -16,7 +14,6 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -80,7 +77,7 @@ public class ProjectControl {
                     .getTransaction(defaultTransactionDefinition);
             try {
                 projectService.newProject(project);
-                JSONObject openTimeData = depositService.setBTime(openDate.getTime());
+                JSONObject openTimeData = depositService.setBTime(openDate.getTime()/1000,project.getId().toString());
                 projectService.saveOpenTime(String.valueOf(project.getId()),openTimeData.toString());
                 String code = String.valueOf(openTimeData.get("code"));
                 if (StringUtils.isNotBlank(code)&&code.equals("0")) {
@@ -539,43 +536,43 @@ public class ProjectControl {
         return projectService.downloadBidderFile(projectId,bidderId);
     }
 
-    @RequestMapping("/addprofessor")
-    @ResponseBody
-    public String addprofessor(String expertId,String projectId){
-        try {
-            depositService.addprofessor(expertId,Integer.valueOf(projectId));
-            return SUCCESS;
-        }
-        catch (Exception e){
-            return FAIL;
-        }
-    }
-    @RequestMapping("/delprofessor")
-    @ResponseBody
-    public String delprofessor(String expertId,String projectId){
-        try {
-            depositService.delprofessor(expertId,Integer.valueOf(projectId));
-            return SUCCESS;
-        }
-        catch (Exception e){
-            return FAIL;
-        }
-    }
-
-    @RequestMapping("/selectprofessor")
-    @ResponseBody
-    public String[] selectprofessor(Integer num,String projectId){
-
-        try {
-            JSONObject result = depositService.selectprofessor(num,Integer.valueOf(projectId));
-            String data = result.getString("data");
-            String[]  professorList = data.split(",");
-            return professorList;
-        }
-        catch (Exception e){
-            return null;
-        }
-    }
+//    @RequestMapping("/addprofessor")
+//    @ResponseBody
+//    public String addprofessor(String expertId,String projectId){
+//        try {
+//            depositService.addprofessor(expertId,Integer.valueOf(projectId));
+//            return SUCCESS;
+//        }
+//        catch (Exception e){
+//            return FAIL;
+//        }
+//    }
+//    @RequestMapping("/delprofessor")
+//    @ResponseBody
+//    public String delprofessor(String expertId,String projectId){
+//        try {
+//            depositService.delprofessor(expertId,Integer.valueOf(projectId));
+//            return SUCCESS;
+//        }
+//        catch (Exception e){
+//            return FAIL;
+//        }
+//    }
+//
+//    @RequestMapping("/selectprofessor")
+//    @ResponseBody
+//    public String[] selectprofessor(Integer num,String projectId){
+//
+//        try {
+//            JSONObject result = depositService.selectprofessor(num,Integer.valueOf(projectId));
+//            String data = result.getString("data");
+//            String[]  professorList = data.split(",");
+//            return professorList;
+//        }
+//        catch (Exception e){
+//            return null;
+//        }
+//    }
 
     @RequestMapping("/allprofessor")
     @ResponseBody
@@ -591,7 +588,20 @@ public class ProjectControl {
             return null;
         }
     }
+    @RequestMapping("/makeprofessor")
+    @ResponseBody
+    public String[] makeprofessor(String projectId){
 
+        try {
+            JSONObject result = depositService.allprofessor(Integer.valueOf(projectId));
+            String data = result.getString("data");
+            String[]  professorList = data.split(",");
+            return professorList;
+        }
+        catch (Exception e){
+            return null;
+        }
+    }
     @RequestMapping("/getAllApprover")
     @ResponseBody
     public List<Approver> getAllApprover(String projectId) {

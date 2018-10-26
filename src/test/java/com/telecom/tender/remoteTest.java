@@ -26,15 +26,18 @@ public class remoteTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date openDate =new Date();
         try {
-             openDate =sdf.parse("2018-10-20 18:06:00");
+             openDate =sdf.parse("2018-10-26 16:55:00");
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-//        JSONObject result = depositService.setBTime(openDate.getTime());
-//        JSONObject result = depositService.getBTime("c8d6c8363a21f6928a591240262f4952");
-        JSONObject result = depositService.chainblock("0x51a286305777427e158398b523a25e1ba64648a1b377d1b31e3915ab91b0b843");
-//        JSONObject verresult = depositService.verifybtime("c8d6c8363a21f6928a591240262f4952");
-        System.out.println(result);
+//        JSONObject result = depositService.setBTime(openDate.getTime()/1000,"4");
+//        System.out.println(result);
+
+//        JSONObject btime = depositService.getBTime("1");
+//        System.out.println(btime);
+//
+        JSONObject verify = depositService.verifybtime("4");
+        System.out.println(verify);
     }
 }
