@@ -1,29 +1,33 @@
 package com.telecom.tender.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class Project {
-    Integer id;
-    String name;
+    private Integer id;
+    private String name;
     private String introFile;
     private String introFileHash;
     private String introFileData;
-    String assessor;
-    String industry;
-    String area;
-    String assessorFile;
-    String assessorFileHash;
-    String assessorFileData;
-    Date opentime;
+    private String assessor;
+    private String industry;
+    private String area;
+    private String assessorFile;
+    private String assessorFileHash;
+    private String assessorFileData;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date opentime;
     String openTimeData;
-    Date tenderTime;
-    String state;
-    String resultsFile;
-    String resultsFileHash;
-    String resultsFileData;
-    String contractFile;
-    String contractFileHash;
-    String contractFileData;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date tenderTime;
+    private String state;
+    private String resultsFile;
+    private String resultsFileHash;
+    private String resultsFileData;
+    private String contractFile;
+    private String contractFileHash;
+    private String contractFileData;
 
     public Project() {
     }

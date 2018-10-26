@@ -143,7 +143,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public JSONObject checkFileHash(String id, String fileType) {
-        String PATH = "";
+        String PATH ;
         Project project = projectMapper.getProjectById(id);
         if (fileType.equals(ProjectFileType.INTRODUCE)){
             PATH = projectMapper.getIntroFilePath(id);
@@ -257,7 +257,7 @@ public class ProjectServiceImpl implements ProjectService {
         String hash = data.getString("transactionId");
         JSONObject evidence = depositService.getEvidengceDetail(id);
         JSONObject evidenceData = (JSONObject) evidence.get("data");
-        if (evidence!=null && evidenceData!=null ){
+        if (evidenceData!=null ){
             JSONObject verifyData = depositService.verify(id,evidenceData.getString("evJson"));
             if (verifyData.getString("msg").equals("success")) {
                 result.put("notChanged", true);
@@ -269,14 +269,15 @@ public class ProjectServiceImpl implements ProjectService {
         else {
             result.put("notChanged",false);
         }
-        JSONObject chainData = depositService.chainblock(hash).getJSONObject("data");
-
-        JSONObject showChainData = new JSONObject();
-        showChainData.put("number",chainData.getString("number"));
-        showChainData.put("blockhash",chainData.getString("hash"));
-        showChainData.put("timestamp",chainData.getString("timestamp"));
-        showChainData.put("transactionshash",chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
-        result.put("chaindata",showChainData);
+        if (StringUtils.isNotBlank(hash)) {
+            JSONObject chainData = depositService.chainblock(hash).getJSONObject("data");
+            JSONObject showChainData = new JSONObject();
+            showChainData.put("number", chainData.getString("number"));
+            showChainData.put("evidenceaddress", "http://123.207.167.245/evchain/app/evidence/store");
+            showChainData.put("timestamp", chainData.getString("timestamp"));
+            showChainData.put("transactionshash", chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
+            result.put("chaindata", showChainData);
+        }
         return result;
     }
 
@@ -378,20 +379,94 @@ public class ProjectServiceImpl implements ProjectService {
             }
             result.put("chainHash",hash);
         }
-        JSONObject evidenceJSON = JSONObject.parseObject(evidenceData);
-        String transactionId = evidenceJSON.getJSONObject("data").getString("transactionId");
-        JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
-        JSONObject showChainData = new JSONObject();
-        showChainData.put("number",chainData.getString("number"));
-        showChainData.put("blockhash",chainData.getString("hash"));
-        showChainData.put("timestamp",chainData.getString("timestamp"));
-        showChainData.put("transactionshash",chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
-        result.put("chaindata",showChainData);
+        if (StringUtils.isNotBlank(evidenceData)) {
+            JSONObject evidenceJSON = JSONObject.parseObject(evidenceData);
+            String transactionId = evidenceJSON.getJSONObject("data").getString("transactionId");
+            JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
+            JSONObject showChainData = new JSONObject();
+            showChainData.put("number", chainData.getString("number"));
+            showChainData.put("evidenceaddress", "http://123.207.167.245/storage/api/files/upload");
+            showChainData.put("timestamp", chainData.getString("timestamp"));
+            showChainData.put("transactionshash", chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
+            result.put("chaindata", showChainData);
+        }
         return result;
     }
 
     @Override
     public List<Approver> getAllApprover() {
         return projectMapper.getAllApprover();
+    }
+
+    @Override
+    public int setSelectedApprover(String projectId, String professorList, String chainData) {
+        return projectMapper.setSelectedApprover(projectId, professorList, chainData);
+    }
+
+    @Override
+    public SelectedApprover getSelectedApprover(String projectId) {
+        return projectMapper.getSelectedApprover(projectId);
+    }
+
+    @Override
+    public JSONObject getSelectedApproverChainData(String projectId, String professorList) {
+        JSONObject ev_json = new JSONObject();
+        JSONObject file_json = new JSONObject();
+        ev_json.put("专家列表",professorList);
+        ev_json.put("项目ID",projectId);
+        file_json.put("files",new ArrayList<String>());
+        JSONObject evidenceresult = depositService.evidencestore("项目专家列表存证","招投标平台",ev_json.toString(),file_json.toString());
+//        String transactionId = evidenceresult.getJSONObject("data").getString("transactionId");
+//        JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
+        return evidenceresult;
+    }
+
+    @Override
+    public JSONObject getOpenTimeResult(String projectId) {
+        Project project = projectMapper.getProjectById(projectId);
+        JSONObject openTimeData = JSONObject.parseObject(project.getOpenTimeData());
+        String evID = openTimeData.getJSONObject("data").getString("evID");
+        return depositService.verifybtime(evID);
+    }
+
+    @Override
+    public JSONObject getOpenTimeTranChainData(String projectId) {
+        JSONObject result = new JSONObject();
+        Project project = projectMapper.getProjectById(projectId);
+        if(StringUtils.isNotBlank(project.getOpenTimeData())) {
+            JSONObject openTimeData = JSONObject.parseObject(project.getOpenTimeData());
+            String transactionId = openTimeData.getJSONObject("data").getString("transactionId");
+            JSONObject chainData = depositService.chainblock(transactionId).getJSONObject("data");
+            JSONObject showChainData = new JSONObject();
+            showChainData.put("number", chainData.getString("number"));
+            showChainData.put("evidenceaddress", "http://123.207.167.245/evchain/app/evidence/setbtime");
+            showChainData.put("timestamp", chainData.getString("timestamp"));
+            showChainData.put("transactionshash", chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
+            result.put("chaindata", showChainData);
+        }
+        return result;
+    }
+
+    @Override
+    public JSONObject checkTenderFile(String projectId, String bidderId) {
+        JSONObject result = new JSONObject();
+        BidderForm bidderForm = projectMapper.getBidderForm(projectId,bidderId);
+        String PATH = bidderForm.getTenderFile();
+        if (StringUtils.isNotBlank(PATH))
+        try {
+            FileInputStream fileInputStream = new FileInputStream(PATH);
+            File file = new File(PATH);
+            try {
+                MultipartFile multipartFile = new MockMultipartFile(file.getName(),fileInputStream);
+                String tenderFileHash = bidderForm.getTenderFileHash();
+                String tenderFileData = bidderForm.getTenderFileData();
+                return checkFile(multipartFile,tenderFileHash,tenderFileData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

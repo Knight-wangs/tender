@@ -135,4 +135,14 @@ public interface ProjectMapper {
     //查询所有评委
     @Select("select userid,username from approver")
     List<Approver> getAllApprover();
+    //设置项目筛选评委信息
+    @Insert("insert into selectedapprover(projectId,professorList,chainData) values(#{projectId},#{professorList},#{chainData})")
+    int setSelectedApprover(@Param("projectId")String projectId,@Param("professorList")String professorList,@Param("chainData")String chainData);
+    //查询项目评委信息
+    @Select("select * from selectedapprover where projectId=#{projectId}")
+    SelectedApprover getSelectedApprover(@Param("projectId") String projectId);
+
+    //根据项目id和投标人id,查询项目投标信息
+    @Select("select * from bidderform where projectId=#{projectId}and bidderid=#{bidderid}")
+    BidderForm getBidderForm(@Param("projectId")String projectId,@Param("bidderid")String bidderid);
 }
