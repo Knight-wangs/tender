@@ -1,5 +1,6 @@
 package com.telecom.tender.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.telecom.tender.model.*;
 import com.telecom.tender.service.impl.AccountServiceImpl;
@@ -56,11 +57,11 @@ public class ProjectControl {
     @Resource
     private PlatformTransactionManager transactionManager;
     @Resource
-    ProjectServiceImpl projectService;
+    private ProjectServiceImpl projectService;
     @Resource
-    DepositServiceImpl depositService;
+    private DepositServiceImpl depositService;
     @Resource
-    AccountServiceImpl accountService;
+    private AccountServiceImpl accountService;
     //新建项目
     @RequestMapping("/newProject")
     @ResponseBody
@@ -475,20 +476,32 @@ public class ProjectControl {
     }
     @RequestMapping("/checkProjectFileHash")
     @ResponseBody
-    public JSONObject checkProjectFileHash(String id,String fileType){
-        return projectService.checkFileHash(id,fileType);
+    public JSONArray checkProjectFileHash(String id, String fileType){
+        JSONArray result = new JSONArray();
+        result.add(projectService.checkFileHash(id,fileType));
+        return result;
     }
     @RequestMapping("/checkBidderFileHash")
     @ResponseBody
-    public JSONObject checkBidderFileHash(String id){
-        return projectService.checkBidderFile(id);
+    public JSONArray checkBidderFileHash(String id){
+        JSONArray result = new JSONArray();
+        result.add(projectService.checkBidderFile(id));
+        return result;
     }
     @RequestMapping("/checkApprovalViewHash")
     @ResponseBody
-    public JSONObject checkApprovalViewHash(String approvalId,String projectId){
-        return projectService.checkApprovalHash(projectId,approvalId);
+    public JSONArray checkApprovalViewHash(String approvalId,String projectId){
+        JSONArray result = new JSONArray();
+        result.add(projectService.checkApprovalHash(projectId,approvalId));
+        return result;
     }
-
+    @RequestMapping("checkTenderFile")
+    @ResponseBody
+    public JSONArray checkTenderFileHash(String projectId,String bidderId){
+        JSONArray result = new JSONArray();
+        result.add(projectService.checkTenderFile(projectId,bidderId));
+        return result;
+    }
     @RequestMapping("/getAllProject")
     @ResponseBody
     public List<Project> getAllProject(){
@@ -536,48 +549,9 @@ public class ProjectControl {
         return projectService.downloadBidderFile(projectId,bidderId);
     }
 
-//    @RequestMapping("/addprofessor")
-//    @ResponseBody
-//    public String addprofessor(String expertId,String projectId){
-//        try {
-//            depositService.addprofessor(expertId,Integer.valueOf(projectId));
-//            return SUCCESS;
-//        }
-//        catch (Exception e){
-//            return FAIL;
-//        }
-//    }
-//    @RequestMapping("/delprofessor")
-//    @ResponseBody
-//    public String delprofessor(String expertId,String projectId){
-//        try {
-//            depositService.delprofessor(expertId,Integer.valueOf(projectId));
-//            return SUCCESS;
-//        }
-//        catch (Exception e){
-//            return FAIL;
-//        }
-//    }
-//
-//    @RequestMapping("/selectprofessor")
-//    @ResponseBody
-//    public String[] selectprofessor(Integer num,String projectId){
-//
-//        try {
-//            JSONObject result = depositService.selectprofessor(num,Integer.valueOf(projectId));
-//            String data = result.getString("data");
-//            String[]  professorList = data.split(",");
-//            return professorList;
-//        }
-//        catch (Exception e){
-//            return null;
-//        }
-//    }
-
     @RequestMapping("/allprofessor")
     @ResponseBody
     public String[] allprofessor(String projectId){
-
         try {
             JSONObject result = depositService.allprofessor(Integer.valueOf(projectId));
             String data = result.getString("data");
@@ -590,17 +564,34 @@ public class ProjectControl {
     }
     @RequestMapping("/makeprofessor")
     @ResponseBody
-    public String[] makeprofessor(String projectId){
+    public JSONArray makeprofessor(String projectId,Integer num){
+        JSONArray results = new JSONArray();
+        JSONObject detail = new JSONObject();
+        SelectedApprover selectedApprover = projectService.getSelectedApprover(projectId);
+        if (selectedApprover == null || StringUtils.isBlank(selectedApprover.getProfessorList())){
+            List<String> approverIDs = new ArrayList<>();
+            List<Approver> allApprover = accountService.getAllApprover();
+            for (Approver approver:allApprover){
+                approverIDs.add(approver.getUserid());
+            }
+            JSONObject makeprofessor = depositService.makeprofessor(num,Integer.valueOf(projectId),StringUtils.strip(approverIDs.toString(),"[]"));
+            projectService.setSelectedApprover(projectId,makeprofessor);
+            selectedApprover = projectService.getSelectedApprover(projectId);
+        }
 
-        try {
-            JSONObject result = depositService.allprofessor(Integer.valueOf(projectId));
-            String data = result.getString("data");
-            String[]  professorList = data.split(",");
-            return professorList;
-        }
-        catch (Exception e){
-            return null;
-        }
+        detail.put("progectID",projectId);
+        String[] professorList = selectedApprover.getProfessorList().split(",");
+        detail.put("professors",professorList);
+
+        results.add(detail);
+        return results;
+    }
+    @RequestMapping("/makeProfessorChainData")
+    @ResponseBody
+    public JSONArray makeProfessorChainData(String projectId){
+        JSONArray result = new JSONArray();
+        result.add(projectService.checkMakeProfessor(projectId));
+        return result;
     }
     @RequestMapping("/getAllApprover")
     @ResponseBody

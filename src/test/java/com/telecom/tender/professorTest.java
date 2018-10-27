@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.telecom.tender.service.DepositService;
 import com.telecom.tender.service.ProjectService;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,15 @@ public class professorTest {
 //        experts.add(1);
 //        experts.add(2);
 //        experts.add(3);
-//        String experts = "1,2,3,4,5,6";
-//        JSONObject resilt = depositService.makeprofessor(3,1,experts);
+//        experts.add(4);
+//        experts.add(5);
+////        String experts = "1,2,3,4,5,6";
+//        JSONObject resilt = depositService.makeprofessor(3,2, StringUtils.strip(experts.toString(),"[]"));
 //        System.out.println(resilt);
 
-        JSONObject select = depositService.getselectprofessor(1);
+        JSONObject select = depositService.getselectprofessor(20);
         System.out.println(select);
+//        JSONObject resilt = depositService.chainblock("0xca60611659203183193aa49cf0aff4532933b76e9e2597e579decbd69c7eca16");
+//        System.out.println(resilt);
     }
 }

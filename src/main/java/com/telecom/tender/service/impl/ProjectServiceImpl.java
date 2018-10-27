@@ -399,8 +399,33 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public int setSelectedApprover(String projectId, String professorList, String chainData) {
-        return projectMapper.setSelectedApprover(projectId, professorList, chainData);
+    public int setSelectedApprover(String projectId,JSONObject makeprofess) {
+        JSONObject selectResult = depositService.getselectprofessor(Integer.valueOf(projectId));
+        if (selectResult!=null) {
+            JSONObject data = makeprofess.getJSONObject("data");
+            String professorList = selectResult.getString("data");
+            return projectMapper.setSelectedApprover(projectId, professorList, makeprofess.toJSONString());
+        }
+        return 0;
+    }
+
+    @Override
+    public JSONObject checkMakeProfessor(String projectId) {
+        JSONObject result = new JSONObject();
+        JSONObject showChainData = new JSONObject();
+        SelectedApprover selectedApprover = projectMapper.getSelectedApprover(projectId);
+        if (StringUtils.isNotBlank(selectedApprover.getChainData())) {
+            JSONObject makeProfessor = JSONObject.parseObject(selectedApprover.getChainData());
+            JSONObject data  = makeProfessor.getJSONObject("data");
+            JSONObject chainData = depositService.chainblock(data.getString("transactionId")).getJSONObject("data");
+            showChainData.put("number", chainData.getString("number"));
+            showChainData.put("evidenceaddress", "http://123.207.167.245/evchain/app/evidence/makeprofessor");
+            showChainData.put("timestamp", chainData.getString("timestamp"));
+            showChainData.put("transactionshash", chainData.getJSONArray("transactions").getJSONObject(0).getString("hash"));
+        }
+        result.put("projectId",projectId);
+        result.put("chainData",showChainData);
+        return result;
     }
 
     @Override

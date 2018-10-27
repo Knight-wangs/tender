@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 @Service("accountService")
 public class AccountServiceImpl implements AccountService {
@@ -117,5 +118,10 @@ public class AccountServiceImpl implements AccountService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public List<Approver> getAllApprover() {
+        return accountMapper.getAllApprover();
     }
 }

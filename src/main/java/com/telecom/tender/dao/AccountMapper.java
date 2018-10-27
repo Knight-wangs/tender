@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 
 @Mapper
 public interface AccountMapper {
@@ -66,4 +68,7 @@ public interface AccountMapper {
     //查询投标方资质审核文件的存在数据
     @Select("select fileData from bidder where userid=#{id}")
     String getBidderFileData(@Param("id") String id);
+    //获取所有的评委
+    @Select("select userid,username,info from approver")
+    List<Approver> getAllApprover();
 }

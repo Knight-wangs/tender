@@ -5,6 +5,8 @@ import com.telecom.tender.model.Assessor;
 import com.telecom.tender.model.Bidder;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface AccountService {
     Approver getApproverByUserIdAndpwd(String userid, String password);
     Bidder getBidderByUserIdAndpwd(String userid, String password);
@@ -27,5 +29,6 @@ public interface AccountService {
     Bidder getBidderInfoById(String userid);
     //下载投标方资质审核文件
     ResponseEntity<byte[]> downloadCompanyFile(String id);
-
+    //获取所有的评委
+    List<Approver> getAllApprover();
 }
