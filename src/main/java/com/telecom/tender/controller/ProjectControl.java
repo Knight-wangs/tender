@@ -599,5 +599,19 @@ public class ProjectControl {
         return projectService.getAllApprover();
     }
 
+    @RequestMapping("/getOpenTimeResult")
+    @ResponseBody
+    public JSONArray getOpenTimeResult(String projectId){
+        JSONArray result = new JSONArray();
+        result.add(projectService.getOpenTimeResult(projectId));
+        return result;
+    }
 
+    @RequestMapping("/getOpenTimeChainData")
+    @ResponseBody
+    public JSONArray getOpenTimeChainData(String projectId){
+        JSONArray result = new JSONArray();
+        result.add(projectService.getOpenTimeTranChainData(projectId));
+        return result;
+    }
 }
