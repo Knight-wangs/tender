@@ -1,6 +1,7 @@
 package com.telecom.tender.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.telecom.tender.dao.AccountMapper;
 import com.telecom.tender.dao.ProjectMapper;
@@ -403,8 +404,12 @@ public class ProjectServiceImpl implements ProjectService {
         JSONObject selectResult = depositService.getselectprofessor(Integer.valueOf(projectId));
         if (selectResult!=null) {
             JSONObject data = makeprofess.getJSONObject("data");
-            String professorList = selectResult.getString("data");
-            return projectMapper.setSelectedApprover(projectId, professorList, makeprofess.toJSONString());
+            JSONArray professorList = selectResult.getJSONArray("data");
+            List<String> professors = new ArrayList<>();
+            for (int i=0;i<professorList.size();i++) {
+                professors.add(professorList.getString(i));
+            }
+            return projectMapper.setSelectedApprover(projectId, professors.toString(), makeprofess.toJSONString());
         }
         return 0;
     }

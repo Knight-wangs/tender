@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -575,15 +576,17 @@ public class ProjectControl {
                 approverIDs.add(approver.getUserid());
             }
             JSONObject makeprofessor = depositService.makeprofessor(num,Integer.valueOf(projectId),StringUtils.strip(approverIDs.toString(),"[]"));
-            projectService.setSelectedApprover(projectId,makeprofessor);
-            selectedApprover = projectService.getSelectedApprover(projectId);
+            if (makeprofessor.getInteger("code") == 0) {
+                projectService.setSelectedApprover(projectId, makeprofessor);
+                selectedApprover = projectService.getSelectedApprover(projectId);
+            }
         }
-
-        detail.put("progectID",projectId);
-        String[] professorList = selectedApprover.getProfessorList().split(",");
-        detail.put("professors",professorList);
-
-        results.add(detail);
+        String[] professorList = StringUtils.strip(selectedApprover.getProfessorList(),"[]").split(",");
+        for (String professor:professorList) {
+            detail.put("progectID", projectId);
+            detail.put("professors",professor);
+            results.add(detail);
+        }
         return results;
     }
     @RequestMapping("/makeProfessorChainData")

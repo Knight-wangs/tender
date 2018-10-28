@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -45,7 +46,13 @@ public class professorTest {
 //        System.out.println(resilt);
 
         JSONObject select = depositService.getselectprofessor(20);
-        System.out.println(select);
+        JSONArray list = select.getJSONArray("data");
+        List<String> professors = new ArrayList<>();
+        for (int i=0;i<list.size();i++) {
+            professors.add(list.getString(i));
+
+        }
+        System.out.println(professors.toString());
 //        JSONObject resilt = depositService.chainblock("0xca60611659203183193aa49cf0aff4532933b76e9e2597e579decbd69c7eca16");
 //        System.out.println(resilt);
     }
