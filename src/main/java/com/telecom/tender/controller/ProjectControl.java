@@ -567,7 +567,6 @@ public class ProjectControl {
     @ResponseBody
     public JSONArray makeprofessor(String projectId,Integer num){
         JSONArray results = new JSONArray();
-        JSONObject detail = new JSONObject();
         SelectedApprover selectedApprover = projectService.getSelectedApprover(projectId);
         if (selectedApprover == null || StringUtils.isBlank(selectedApprover.getProfessorList())){
             List<String> approverIDs = new ArrayList<>();
@@ -581,11 +580,14 @@ public class ProjectControl {
                 selectedApprover = projectService.getSelectedApprover(projectId);
             }
         }
-        String[] professorList = StringUtils.strip(selectedApprover.getProfessorList(),"[]").split(",");
-        for (String professor:professorList) {
-            detail.put("progectID", projectId);
-            detail.put("professors",professor);
-            results.add(detail);
+        if(StringUtils.isNotBlank(selectedApprover.getProfessorList())) {
+            String[] professorList = StringUtils.strip(selectedApprover.getProfessorList(), "[]").split(",");
+            for (int i = 0; i < professorList.length; i++) {
+                JSONObject detail = new JSONObject();
+                detail.put("progectID", projectId);
+                detail.put("professors", professorList[i]);
+                results.add(detail);
+            }
         }
         return results;
     }
