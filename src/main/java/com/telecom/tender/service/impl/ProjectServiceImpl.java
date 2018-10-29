@@ -9,10 +9,7 @@ import com.telecom.tender.model.*;
 import com.telecom.tender.service.ProjectService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -316,6 +313,9 @@ public class ProjectServiceImpl implements ProjectService {
         }
         headers.setContentDispositionFormData("attachment", downloadFielName);
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        List<String> exposeHeaders = new ArrayList<>();
+        exposeHeaders.add("Content-Disposition");
+        headers.setAccessControlExposeHeaders(exposeHeaders);
         try {
             return new ResponseEntity<byte[]>(
                     FileUtils.readFileToByteArray(file), headers,
@@ -348,6 +348,9 @@ public class ProjectServiceImpl implements ProjectService {
         }
         headers.setContentDispositionFormData("attachment", downloadFielName);
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        List<String> exposeHeaders = new ArrayList<>();
+        exposeHeaders.add("Content-Disposition");
+        headers.setAccessControlExposeHeaders(exposeHeaders);
         try {
             return new ResponseEntity<byte[]>(
                     FileUtils.readFileToByteArray(file), headers,

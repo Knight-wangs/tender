@@ -451,6 +451,10 @@ public class ProjectControl {
     @ResponseBody
     public String evaluation(String approvalId, String projectId,  String techScore,
                              String bussScore, String serverScore,String totalScore ,String comment){
+        String projectState = projectService.getProjectState(projectId);
+        if (!projectState.equals("2")){
+            return FAIL+"项目状态不可评标";
+        }
         DefaultTransactionDefinition defaultTransactionDefinition = new DefaultTransactionDefinition();
         defaultTransactionDefinition
                 .setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -462,6 +466,7 @@ public class ProjectControl {
                 state = 1;
             }
             if(projectService.evaluation(approvalId, projectId, techScore, bussScore, serverScore, totalScore, comment, state) > 0){
+                projectService.setProjectState(projectId,"3");//进入评标状态
                 transactionManager.commit(transactionstatus);
                 return SUCCESS;
             }
@@ -585,7 +590,7 @@ public class ProjectControl {
             for (int i = 0; i < professorList.length; i++) {
                 JSONObject detail = new JSONObject();
                 detail.put("progectID", projectId);
-                detail.put("professors", professorList[i]);
+                detail.put("professors", professorList[i].trim());
                 results.add(detail);
             }
         }
