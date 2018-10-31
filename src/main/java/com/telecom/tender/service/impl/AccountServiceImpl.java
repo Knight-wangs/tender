@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("accountService")
@@ -103,13 +105,15 @@ public class AccountServiceImpl implements AccountService {
         HttpHeaders headers = new HttpHeaders();
         String downloadFielName = null;
         try {
-            downloadFielName = new String(file.getName().getBytes("UTF-8"),
-                    "iso-8859-1");
+            downloadFielName = URLEncoder.encode(file.getName(),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         headers.setContentDispositionFormData("attachment", downloadFielName);
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        List<String> exposeHeaders = new ArrayList<>();
+        exposeHeaders.add("Content-Disposition");
+        headers.setAccessControlExposeHeaders(exposeHeaders);
         try {
             return new ResponseEntity<byte[]>(
                     FileUtils.readFileToByteArray(file), headers,

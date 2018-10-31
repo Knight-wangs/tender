@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -306,8 +307,7 @@ public class ProjectServiceImpl implements ProjectService {
         HttpHeaders headers = new HttpHeaders();
         String downloadFielName = null;
         try {
-            downloadFielName = new String(file.getName().getBytes("UTF-8"),
-                    "iso-8859-1");
+            downloadFielName = URLEncoder.encode(file.getName(),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -341,8 +341,7 @@ public class ProjectServiceImpl implements ProjectService {
         HttpHeaders headers = new HttpHeaders();
         String downloadFielName = null;
         try {
-            downloadFielName = new String(file.getName().getBytes("UTF-8"),
-                    "iso-8859-1");
+            downloadFielName = URLEncoder.encode(file.getName(),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
