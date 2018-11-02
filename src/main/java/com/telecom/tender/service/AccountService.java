@@ -31,4 +31,6 @@ public interface AccountService {
     ResponseEntity<byte[]> downloadCompanyFile(String id);
     //获取所有的评委
     List<Approver> getAllApprover();
+    //查询评委
+    Approver getApprover(String userId);
 }

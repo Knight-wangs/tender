@@ -71,4 +71,7 @@ public interface AccountMapper {
     //获取所有的评委
     @Select("select userid,username,info from approver")
     List<Approver> getAllApprover();
+    //查询评委信息
+    @Select("select userid,username,phonenumber,info from approver where userid=#{userId}")
+    Approver getApprover(String userId);
 }

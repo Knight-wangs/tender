@@ -4,6 +4,7 @@ public class Approver {
     String userid;
     String username;
     String password;
+    String phonenumber;
     private String info;
     public String getUserid() {
         return userid;
@@ -27,6 +28,14 @@ public class Approver {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
     }
 
     public String getInfo() {

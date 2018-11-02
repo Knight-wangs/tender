@@ -590,7 +590,8 @@ public class ProjectControl {
             for (int i = 0; i < professorList.length; i++) {
                 JSONObject detail = new JSONObject();
                 detail.put("progectID", projectId);
-                detail.put("professors", professorList[i].trim());
+                Approver approver = accountService.getApprover(professorList[i].trim());
+                detail.put("professors", approver);
                 results.add(detail);
             }
         }

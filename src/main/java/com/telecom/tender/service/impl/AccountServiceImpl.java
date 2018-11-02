@@ -128,4 +128,9 @@ public class AccountServiceImpl implements AccountService {
     public List<Approver> getAllApprover() {
         return accountMapper.getAllApprover();
     }
+
+    @Override
+    public Approver getApprover(String userId) {
+        return accountMapper.getApprover(userId);
+    }
 }
