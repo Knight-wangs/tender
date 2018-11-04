@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-//0建项 1招标 2开标3评标 4定标
+//0建项 1招标 2资格预审 3投标 4开标 5评标 6定标
 @Controller
 @RequestMapping("/project")
 public class ProjectControl {
@@ -53,6 +53,14 @@ public class ProjectControl {
     private final String QUALIFICATIONFILEPATH = "/root/tender/qualifacationfile";
     private final String BIDDERFORM = "/root/tender/bidderfile";
 
+    //0建项 1招标 2资格预审 3投标 4开标 5评标 6定标
+    private final static String CREATE = "0";
+    private final static String INIVITE = "1";
+    private final static String QUALIFY = "2";
+    private final static String BIDDER = "3";
+    private final static String OPEN = "4";
+    private final static String EVALUATION = "5";
+    private final static String RESULT = "6";
     private final static String SUCCESS = "success";
     private final static String FAIL = "fail";
     @Resource
@@ -71,7 +79,10 @@ public class ProjectControl {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date openDate =sdf.parse(opentime);
             Date tenderDate = sdf.parse(tenderTime);
-            Project project = new Project(name, assessor, industry, area, openDate, tenderDate,"0");//建项 0
+            if (tenderDate.after(openDate)){
+                return FAIL+"招标时间大于开标时间";
+            }
+            Project project = new Project(name, assessor, industry, area, openDate, tenderDate,CREATE);//建项 0
             DefaultTransactionDefinition defaultTransactionDefinition = new DefaultTransactionDefinition();
             defaultTransactionDefinition
                     .setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -213,7 +224,7 @@ public class ProjectControl {
             String hash = uploadresult.getJSONObject("data").getString("md5");
             String fileData = projectService.getFileData(uploadresult.getString("data"));
             projectService.saveProjectFileHash(hash,fileData,id,ProjectFileType.ASSESSOR);
-            projectService.setProjectState(id,"1"); //上传招标公告后，修改状态为开标
+            projectService.setProjectState(id,INIVITE); //上传招标公告后，修改状态为招标
             transactionManager.commit(status);
             return SUCCESS;
         }
@@ -266,7 +277,7 @@ public class ProjectControl {
             String hash = uploadresult.getJSONObject("data").getString("md5");
             String fileData = projectService.getFileData(uploadresult.getString("data"));
             projectService.saveProjectFileHash(hash,fileData,id,ProjectFileType.RESULT);
-            projectService.setProjectState(id,"4"); //上传招标结果后，修改状态为定标
+            projectService.setProjectState(id,RESULT); //上传招标结果后，修改状态为定标
             transactionManager.commit(status);
             return SUCCESS;
         }
@@ -320,7 +331,7 @@ public class ProjectControl {
             String hash = uploadresult.getJSONObject("data").getString("md5");
             String fileData = projectService.getFileData(uploadresult.getString("data"));
             projectService.saveProjectFileHash(hash,fileData,id,ProjectFileType.CONTRACT);
-            projectService.setProjectState(id,"4"); //上传招标结果后，修改状态为定标
+            projectService.setProjectState(id,RESULT); //上传招标结果后，修改状态为定标
             transactionManager.commit(status);
             return SUCCESS;
         }
@@ -361,9 +372,9 @@ public class ProjectControl {
     //上传资质审核文件
     @RequestMapping("/uploadQualificationFile")
     @ResponseBody
-    public String uploadQualificationFile(String id,MultipartFile multipartFile){
+    public String uploadQualificationFile(String projectId,String bidderId,MultipartFile multipartFile){
         String filename = multipartFile.getOriginalFilename();
-        String PATH = QUALIFICATIONFILEPATH + File.separator + id;
+        String PATH = QUALIFICATIONFILEPATH + File.separator + bidderId + File.separator + projectId;
         try {
             File file = new File(PATH);
             if (!file.exists()){
@@ -379,7 +390,7 @@ public class ProjectControl {
             e.printStackTrace();
             return FAIL;
         }
-        accountService.saveCompanyFile(PATH,id);
+        accountService.saveCompanyFile(PATH,projectId,bidderId);
         JSONObject uploadresult = null;
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(PATH));
@@ -392,7 +403,8 @@ public class ProjectControl {
         if (null!=uploadresult&&uploadresult.getString("msg").equals("success")){
             String hash = uploadresult.getJSONObject("data").getString("md5");
             String fileData = projectService.getFileData(uploadresult.getString("data"));
-            accountService.saveCompanyFileHash(hash,fileData,id);
+            projectService.setProjectState(projectId,QUALIFY);
+            accountService.saveCompanyFileHash(hash,fileData,projectId,bidderId);
             return SUCCESS;
         }
         return FAIL;
@@ -441,6 +453,7 @@ public class ProjectControl {
         if (null!=uploadresult&&uploadresult.getString("msg").equals("success")){
             String hash = uploadresult.getJSONObject("data").getString("md5");
             String fileData = projectService.getFileData(uploadresult.getString("data"));
+            projectService.setProjectState(projectId,BIDDER);
             projectService.uploadBidderForm(projectId,bidderId,PATH,hash,fileData);
             return SUCCESS;
         }
@@ -466,7 +479,7 @@ public class ProjectControl {
                 state = 1;
             }
             if(projectService.evaluation(approvalId, projectId, techScore, bussScore, serverScore, totalScore, comment, state) > 0){
-                projectService.setProjectState(projectId,"3");//进入评标状态
+                projectService.setProjectState(projectId,EVALUATION);//进入评标状态
                 transactionManager.commit(transactionstatus);
                 return SUCCESS;
             }
@@ -489,9 +502,9 @@ public class ProjectControl {
     }
     @RequestMapping("/checkBidderFileHash")
     @ResponseBody
-    public JSONArray checkBidderFileHash(String id){
+    public JSONArray checkBidderFileHash(String projectId,String bidderId){
         JSONArray result = new JSONArray();
-        result.add(projectService.checkBidderFile(id));
+        result.add(projectService.checkBidderFile(projectId,bidderId));
         return result;
     }
     @RequestMapping("/checkApprovalViewHash")
@@ -546,8 +559,8 @@ public class ProjectControl {
     }
     @RequestMapping("/downCompanyFile")
     @ResponseBody
-    public ResponseEntity<byte[]> downCompanyFile(String id){
-        return accountService.downloadCompanyFile(id);
+    public ResponseEntity<byte[]> downCompanyFile(String projectId,String bidderId){
+        return accountService.downloadCompanyFile(projectId,bidderId);
     }
     @RequestMapping("/downTenderFile")
     @ResponseBody
@@ -624,5 +637,52 @@ public class ProjectControl {
         JSONArray result = new JSONArray();
         result.add(projectService.getOpenTimeTranChainData(projectId));
         return result;
+    }
+
+    @RequestMapping("/getAllQualifyData")
+    @ResponseBody
+    public List<ProjectBidderQualify> getAllQualifyData(){
+        List<ProjectBidderQualify> projectBidderQualifyList = new ArrayList<>();
+        List<BidderFile> bidderFileList = accountService.getAllBidderFile();
+        for (BidderFile bidderFile:bidderFileList){
+            String projectId = bidderFile.getProjectId();
+            Project project = projectService.getProjectById(projectId);
+            ProjectBidderQualify projectBidderQualify = new ProjectBidderQualify();
+            projectBidderQualify.setProjectId(projectId);
+            projectBidderQualify.setArea(project.getArea());
+            projectBidderQualify.setName(project.getName());
+            projectBidderQualify.setOpentime(project.getOpentime());
+            projectBidderQualify.setState(project.getState());
+            projectBidderQualify.setTenderTime(project.getTenderTime());
+            projectBidderQualify.setBidderFile(bidderFile);
+            projectBidderQualifyList.add(projectBidderQualify);
+        }
+        return projectBidderQualifyList;
+    }
+    @RequestMapping("/getQualifyDataByBidderId")
+    @ResponseBody
+    public List<ProjectBidderQualify> getQualifyDataByBidderId(String bidderId){
+        List<ProjectBidderQualify> projectBidderQualifyList = new ArrayList<>();
+        List<Project> projectList = projectService.getAllProject();
+        for (Project project:projectList){
+            String projectId = project.getId().toString();
+            ProjectBidderQualify projectBidderQualify = new ProjectBidderQualify();
+            projectBidderQualify.setProjectId(projectId);
+            projectBidderQualify.setArea(project.getArea());
+            projectBidderQualify.setName(project.getName());
+            projectBidderQualify.setOpentime(project.getOpentime());
+            projectBidderQualify.setState(project.getState());
+            projectBidderQualify.setTenderTime(project.getTenderTime());
+            BidderFile bidderFile = accountService.getBidderQuaFile(projectId,bidderId);
+            if (bidderFile == null){
+                projectBidderQualify.setIsQualify("0");
+            }
+            else {
+                projectBidderQualify.setIsQualify("1");
+            }
+            projectBidderQualify.setBidderFile(bidderFile);
+            projectBidderQualifyList.add(projectBidderQualify);
+        }
+        return projectBidderQualifyList;
     }
 }

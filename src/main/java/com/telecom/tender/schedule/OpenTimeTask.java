@@ -36,7 +36,7 @@ public class OpenTimeTask {
                 if (data!=null) {
                     String verify = data.getString("verify");
                     if (StringUtils.isNotBlank(verify) && Boolean.valueOf(verify)){
-                        projectService.setProjectState(evID,"2");
+                        projectService.setProjectState(evID,"4");
                     }
                 }
             }

@@ -32,7 +32,26 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> getAllProject() {
-        return projectMapper.getAllProject();
+        List<Project> projectList = projectMapper.getAllProject();
+        for (Project project:projectList){
+            project.setIntroFileState("0");
+            project.setAssessorFileState("0");
+            project.setContractFileState("0");
+            project.setResultsFileState("0");
+            if (StringUtils.isNotBlank(project.getIntroFile())){
+                project.setIntroFileState("1");
+            }
+            if (StringUtils.isNotBlank(project.getAssessorFile())){
+                project.setAssessorFileState("1");
+            }
+            if (StringUtils.isNotBlank(project.getContractFile())){
+                project.setContractFileState("1");
+            }
+            if (StringUtils.isNotBlank(project.getResultsFile())){
+                project.setResultsFileState("1");
+            }
+        }
+        return projectList;
     }
 
     @Override
@@ -216,15 +235,15 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public JSONObject checkBidderFile(String id) {
-        String PATH = accountMapper.getBidderFile(id);
+    public JSONObject checkBidderFile(String projectId,String bidderId) {
+        String PATH = accountMapper.getBidderFile(projectId, bidderId);
         try {
             FileInputStream fileInputStream = new FileInputStream(PATH);
             File file = new File(PATH);
             try {
                 MultipartFile multipartFile = new MockMultipartFile(file.getName(),fileInputStream);
-                String storeHash = accountMapper.getBidderFileHash(id);
-                String fileData = accountMapper.getBidderFileData(id);
+                String storeHash = accountMapper.getBidderFileHash(projectId,bidderId);
+                String fileData = accountMapper.getBidderFileData(projectId,bidderId);
                 return checkFile(multipartFile,storeHash,fileData);
             } catch (IOException e) {
                 e.printStackTrace();

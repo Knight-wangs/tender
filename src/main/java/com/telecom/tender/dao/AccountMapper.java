@@ -3,10 +3,8 @@ package com.telecom.tender.dao;
 import com.telecom.tender.model.Approver;
 import com.telecom.tender.model.Assessor;
 import com.telecom.tender.model.Bidder;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import com.telecom.tender.model.BidderFile;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -31,26 +29,38 @@ public interface AccountMapper {
     @Select("select count(*) from assessor where userid = #{userid}")
     int getAssessorByUserId(@Param("userid") String userid);
 
-    @Update("insert into approver (userid,username,password) values (#{userId},#{username},#{password}) ")
+    //查询资质审核文件是否已存在
+    @Select("select * from bidderfile where projectId=#{projectId} and bidderId=#{bidderId} ")
+    BidderFile getBidderQuaFile(@Param("projectId") String projectId,@Param("bidderId")String bidderId);
+    @Insert("insert into approver (userid,username,password) values (#{userId},#{username},#{password}) ")
     int regiserApprover(@Param("userId") String userId,@Param("username") String username,@Param("password") String password);
 
-    @Update("insert into bidder (userid,username,password) values (#{userId},#{username},#{password}) ")
+    @Insert("insert into bidder (userid,username,password) values (#{userId},#{username},#{password}) ")
     int regiserBidder(@Param("userId") String userId,@Param("username") String username,@Param("password") String password);
 
-    @Update("insert into assessor (userid,username,password) values(#{userId},#{username},#{password})")
+    @Insert("insert into assessor (userid,username,password) values(#{userId},#{username},#{password})")
     int regiserAssessor(@Param("userId") String userId,@Param("username") String username,@Param("password") String password);
 
     //更新投标方信息
     @Update("update bidder set companyname=#{companyname},phonenumber = #{phonenumber},info = #{info} where userid = #{id}")
     int updateBidderInfo(@Param("companyname") String companyname,@Param("phonenumber") String phonenumber,@Param("info") String info,@Param("id") String id);
 
-    //设置投标方资质审核文件地址
-    @Update("update bidder set fileposition = #{fileposition} where userid=#{userid}")
-    int saveCompanyFile(@Param("fileposition") String fileposition,@Param("userid") String userid);
+    //插入投标方资质审核文件地址
+    @Insert("Insert bidderfile  (fileposition,projectId,bidderId) values (#{fileposition},#{projectId},#{bidderId}) ")
+    int saveCompanyFile(@Param("fileposition") String fileposition,@Param("projectId") String projectId,@Param("bidderId")String bidderId);
 
-    //设置投标方资质审核文件hash
-    @Update("update bidder set filehash = #{filehash},fileData = #{fileData} where userid=#{userid}")
-    int saveCompanyFileHash(@Param("filehash") String filehash,@Param("fileData")String fileData,@Param("userid") String userid);
+    //插入投标方资质审核文件hash
+    @Insert("insert bidderfile (filehash,fileData,projectId,bidderId) values (#{filehash},#{fileData},#{projectId},#{bidderId})")
+    int saveCompanyFileHash(@Param("filehash") String filehash,@Param("fileData")String fileData,
+                            @Param("projectId") String projectId,@Param("bidderId")String bidderId);
+    //更新投标方资质审核文件地址
+    @Update("update bidderfile set fileposition = #{fileposition}  where projectId=#{projectId} and bidderId=#{bidderId}")
+    int updateCompanyFile(@Param("fileposition") String fileposition,@Param("projectId") String projectId,@Param("bidderId")String bidderId);
+
+    //更新投标方资质审核文件hash
+    @Update("update bidderfile set filehash = #{filehash},fileData = #{fileData} where projectId=#{projectId} and bidderId=#{bidderId}")
+    int updateCompanyFileHash(@Param("filehash") String filehash,@Param("fileData")String fileData,
+                            @Param("projectId") String projectId,@Param("bidderId")String bidderId);
 
     //更新评委信息
     @Update("update approver set info = #{info} where userid = #{id}")
@@ -60,18 +70,24 @@ public interface AccountMapper {
     Bidder getBidderInfoById(@Param("userid") String userid);
 
     //查询投标人资质文件位置
-    @Select("select fileposition from bidder where userid=#{id}")
-    String getBidderFile(@Param("id") String id);
+    @Select("select fileposition from bidderfile where projectId=#{projectId} and bidderId=#{bidderId}")
+    String getBidderFile(@Param("projectId") String projectId,@Param("bidderId")String bidderId);
     //查询投标人资质文件hash
-    @Select("select filehash from bidder where userid=#{id}")
-    String getBidderFileHash(@Param("id") String id);
+    @Select("select filehash from bidder where projectId=#{projectId} and bidderId=#{bidderId}")
+    String getBidderFileHash(@Param("projectId") String projectId,@Param("bidderId")String bidderId);
     //查询投标方资质审核文件的存在数据
-    @Select("select fileData from bidder where userid=#{id}")
-    String getBidderFileData(@Param("id") String id);
+    @Select("select fileData from bidderfile where projectId=#{projectId} and bidderId=#{bidderId}")
+    String getBidderFileData(@Param("projectId") String projectId,@Param("bidderId")String bidderId);
     //获取所有的评委
     @Select("select userid,username,info from approver")
     List<Approver> getAllApprover();
     //查询评委信息
     @Select("select userid,username,phonenumber,info from approver where userid=#{userId}")
     Approver getApprover(String userId);
+    //查询所有资质审核文件信息
+    @Select("select * from bidderfile")
+    List<BidderFile> getAllBidderFile();
+    //按照投标方id查询项目资质审核文件
+    @Select("select * from bidderfile where bidderId=#{bidderId} ")
+    List<BidderFile> getBidderQuaFileByBidderId(@Param("bidderId")String bidderId);
 }

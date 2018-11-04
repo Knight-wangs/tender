@@ -49,7 +49,7 @@ public interface ProjectService {
     JSONObject checkFileHash(String id, String fileType);
 
     //检查投标人资质文件hash
-    JSONObject checkBidderFile(String id);
+    JSONObject checkBidderFile(String projectId,String bidderId);
 
     //查询是否评委已经评估
     int checkIsApproval(String approvalid, String projectid);

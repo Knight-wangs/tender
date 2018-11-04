@@ -2,7 +2,7 @@ package com.telecom.tender.dao;
 
 import com.telecom.tender.model.*;
 import org.apache.ibatis.annotations.*;
-import org.springframework.stereotype.Repository;
+
 
 import java.util.Date;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface ProjectMapper {
     //查询所有项目
-    @Select("select id,name,assessor,industry,area,opentime,tenderTime,state from project where 1=1 order by tenderTime DESC")
+    @Select("select * from project where 1=1 order by tenderTime DESC")
     public List<Project> getAllProject();
     //查询等待所有开标的项目
     @Select("select * from project where state = '1'")
@@ -18,10 +18,7 @@ public interface ProjectMapper {
     //根据id查询项目
     @Select("select * from project where id = #{id}")
     public Project getProjectById(@Param("id") String id);
-    //根据项目id查投标情况
-    @Select("select bidderid,bidderName,tenderFile from bidderform left join bidder on bidderform.bidderid=bidder.userid " +
-            "where projectid = #{projectid}")
-    public List<BidderForm> getBidderFormByProjectId(@Param("projectid") String projectid);
+
     //根据项目id查项目审批情况
     @Select("select view,detail from approvalform left join approver on approvalform.approvalid = approver.userid " +
             "where projectid = #{projectid}")

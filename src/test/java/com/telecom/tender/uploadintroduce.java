@@ -49,7 +49,7 @@ public class uploadintroduce {
         FileInputStream fileInputStream = new FileInputStream(file);
         MockMultipartFile multipartFile = new MockMultipartFile("multipartFile","存证平台应用接口文档V2.0.doc","text/plain",fileInputStream);
         mvc.perform(MockMvcRequestBuilders.fileUpload("/project/uploadQualificationFile").
-                file( multipartFile).param("id","001")).
+                file( multipartFile).param("projectId","001").param("bidderId","001")).
                 andExpect(status().is(200)).
                 andExpect(content().string("success"));
     }

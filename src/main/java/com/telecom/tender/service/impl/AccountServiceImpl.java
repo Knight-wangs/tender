@@ -1,9 +1,7 @@
 package com.telecom.tender.service.impl;
 
 import com.telecom.tender.dao.AccountMapper;
-import com.telecom.tender.model.Approver;
-import com.telecom.tender.model.Assessor;
-import com.telecom.tender.model.Bidder;
+import com.telecom.tender.model.*;
 import com.telecom.tender.service.AccountService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -76,13 +74,26 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public int saveCompanyFile(String fileposition, String id) {
-        return accountMapper.saveCompanyFile(fileposition, id);
+    public int saveCompanyFile(String fileposition, String projectId,String bidderId) {
+        BidderFile bidderFile = accountMapper.getBidderQuaFile(projectId, bidderId);
+        if (bidderFile==null){
+            return accountMapper.saveCompanyFile(fileposition, projectId,bidderId);
+        }
+        else {
+            return accountMapper.updateCompanyFile(fileposition,projectId,bidderId);
+        }
     }
 
     @Override
-    public int saveCompanyFileHash(String filehash, String fileData,String id) {
-        return accountMapper.saveCompanyFileHash(filehash,fileData,id);
+    public int saveCompanyFileHash(String filehash, String fileData,String projectId,String bidderId) {
+        BidderFile bidderFile = accountMapper.getBidderQuaFile(projectId, bidderId);
+        if (bidderFile == null){
+            return accountMapper.saveCompanyFileHash(filehash,fileData, projectId,bidderId);
+        }
+        else {
+            return accountMapper.updateCompanyFileHash(filehash,fileData,projectId,bidderId);
+        }
+
     }
 
     @Override
@@ -96,8 +107,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ResponseEntity<byte[]> downloadCompanyFile(String id) {
-        String PATH = accountMapper.getBidderFile(id);
+    public ResponseEntity<byte[]> downloadCompanyFile(String projectId,String bidderId) {
+        String PATH = accountMapper.getBidderFile(projectId,bidderId);
         if (StringUtils.isBlank(PATH)){
             return null;
         }
@@ -132,5 +143,20 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Approver getApprover(String userId) {
         return accountMapper.getApprover(userId);
+    }
+
+    @Override
+    public List<BidderFile> getAllBidderFile() {
+        return accountMapper.getAllBidderFile();
+    }
+
+    @Override
+    public List<BidderFile> getBidderQuaFileByBidderId(String bidderId) {
+        return accountMapper.getBidderQuaFileByBidderId(bidderId);
+    }
+
+    @Override
+    public BidderFile getBidderQuaFile(String projectId, String bidderId) {
+        return accountMapper.getBidderQuaFile(projectId,bidderId);
     }
 }
