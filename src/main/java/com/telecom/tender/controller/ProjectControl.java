@@ -500,6 +500,7 @@ public class ProjectControl {
         result.add(projectService.checkFileHash(id,fileType));
         return result;
     }
+    //检查投标方资质审核文件hash
     @RequestMapping("/checkBidderFileHash")
     @ResponseBody
     public JSONArray checkBidderFileHash(String projectId,String bidderId){
@@ -521,6 +522,7 @@ public class ProjectControl {
         result.add(projectService.checkTenderFile(projectId,bidderId));
         return result;
     }
+    //查询所有项目
     @RequestMapping("/getAllProject")
     @ResponseBody
     public List<Project> getAllProject(){
@@ -534,11 +536,14 @@ public class ProjectControl {
         bidders.add(bidder);
         return bidders;
     }
+    //按照项目id查询投标方信息
     @RequestMapping("/getBidderInfo")
     @ResponseBody
     public List<BidderInfo> getBidderInfo(String projectId){
         return projectService.getAllBidderByProjectId(projectId);
     }
+
+    //查询
     @RequestMapping("/getApprovalEvaluation")
     @ResponseBody
     public List<ApprovalForm> getApprovalEvaluation(String projectId, String approvalId){
@@ -622,7 +627,7 @@ public class ProjectControl {
     public List<Approver> getAllApprover(String projectId) {
         return projectService.getAllApprover();
     }
-
+    //开标结果
     @RequestMapping("/getOpenTimeResult")
     @ResponseBody
     public JSONArray getOpenTimeResult(String projectId){
@@ -630,7 +635,7 @@ public class ProjectControl {
         result.add(projectService.getOpenTimeResult(projectId));
         return result;
     }
-
+    //开标时间上链信息
     @RequestMapping("/getOpenTimeChainData")
     @ResponseBody
     public JSONArray getOpenTimeChainData(String projectId){
@@ -639,6 +644,7 @@ public class ProjectControl {
         return result;
     }
 
+    //查询所有项目的资质审核信息
     @RequestMapping("/getAllQualifyData")
     @ResponseBody
     public List<ProjectBidderQualify> getAllQualifyData(){
@@ -650,6 +656,7 @@ public class ProjectControl {
             ProjectBidderQualify projectBidderQualify = new ProjectBidderQualify();
             projectBidderQualify.setProjectId(projectId);
             projectBidderQualify.setArea(project.getArea());
+            projectBidderQualify.setIndustry(project.getIndustry());
             projectBidderQualify.setName(project.getName());
             projectBidderQualify.setOpentime(project.getOpentime());
             projectBidderQualify.setState(project.getState());
@@ -659,6 +666,7 @@ public class ProjectControl {
         }
         return projectBidderQualifyList;
     }
+    //按照投标方id查询所有的项目资质审核文件
     @RequestMapping("/getQualifyDataByBidderId")
     @ResponseBody
     public List<ProjectBidderQualify> getQualifyDataByBidderId(String bidderId){
@@ -669,6 +677,7 @@ public class ProjectControl {
             ProjectBidderQualify projectBidderQualify = new ProjectBidderQualify();
             projectBidderQualify.setProjectId(projectId);
             projectBidderQualify.setArea(project.getArea());
+            projectBidderQualify.setIndustry(project.getIndustry());
             projectBidderQualify.setName(project.getName());
             projectBidderQualify.setOpentime(project.getOpentime());
             projectBidderQualify.setState(project.getState());
@@ -685,4 +694,34 @@ public class ProjectControl {
         }
         return projectBidderQualifyList;
     }
+
+    //按照投标方id查询所有的项目投标文件
+    @RequestMapping("/getTenderFileByBidderId")
+    @ResponseBody
+    public List<ProjectBidderTenderFile> getTenderFileByBidderId(String bidderId){
+        List<ProjectBidderTenderFile> ProjectBidderTenderFileList = new ArrayList<>();
+        List<Project> projectList = projectService.getAllProject();
+        for (Project project:projectList){
+            String projectId = project.getId().toString();
+            ProjectBidderTenderFile ProjectBidderTenderFile = new ProjectBidderTenderFile();
+            ProjectBidderTenderFile.setProjectId(projectId);
+            ProjectBidderTenderFile.setArea(project.getArea());
+            ProjectBidderTenderFile.setIndustry(project.getIndustry());
+            ProjectBidderTenderFile.setName(project.getName());
+            ProjectBidderTenderFile.setOpentime(project.getOpentime());
+            ProjectBidderTenderFile.setState(project.getState());
+            ProjectBidderTenderFile.setTenderTime(project.getTenderTime());
+            BidderForm bidderForm = projectService.getBidderForm(projectId,bidderId);
+            if (bidderForm == null){
+                ProjectBidderTenderFile.setIsTender("0");
+            }
+            else {
+                ProjectBidderTenderFile.setIsTender("1");
+            }
+            ProjectBidderTenderFile.setBidderForm(bidderForm);
+            ProjectBidderTenderFileList.add(ProjectBidderTenderFile);
+        }
+        return ProjectBidderTenderFileList;
+    }
+
 }

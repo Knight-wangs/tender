@@ -99,4 +99,6 @@ public interface ProjectService {
     //查询执行筛选专家合约的链上信息
     JSONObject checkMakeProfessor(String projectId);
 
+    //根据项目id和投标人id,查询项目投标信息
+    BidderForm getBidderForm(String projectId,String bidderid);
 }

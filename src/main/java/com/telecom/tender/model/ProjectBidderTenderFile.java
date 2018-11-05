@@ -2,16 +2,17 @@ package com.telecom.tender.model;
 
 import java.util.Date;
 
-public class ProjectBidderQualify {
+public class ProjectBidderTenderFile {
     private String projectId;
+    private String bidderId;
     private String name;
     private String industry;
     private String area;
     private Date opentime;
     private Date tenderTime;
     private String state;
-    private String isQualify;
-    private BidderFile bidderFile;
+    private String isTender;
+    private BidderForm bidderForm;
 
     public String getProjectId() {
         return projectId;
@@ -21,12 +22,28 @@ public class ProjectBidderQualify {
         this.projectId = projectId;
     }
 
+    public String getBidderId() {
+        return bidderId;
+    }
+
+    public void setBidderId(String bidderId) {
+        this.bidderId = bidderId;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
     }
 
     public String getArea() {
@@ -61,27 +78,19 @@ public class ProjectBidderQualify {
         this.state = state;
     }
 
-    public BidderFile getBidderFile() {
-        return bidderFile;
+    public String getIsTender() {
+        return isTender;
     }
 
-    public void setBidderFile(BidderFile bidderFile) {
-        this.bidderFile = bidderFile;
+    public void setIsTender(String isTender) {
+        this.isTender = isTender;
     }
 
-    public String getIsQualify() {
-        return isQualify;
+    public BidderForm getBidderForm() {
+        return bidderForm;
     }
 
-    public void setIsQualify(String isQualify) {
-        this.isQualify = isQualify;
-    }
-
-    public String getIndustry() {
-        return industry;
-    }
-
-    public void setIndustry(String industry) {
-        this.industry = industry;
+    public void setBidderForm(BidderForm bidderForm) {
+        this.bidderForm = bidderForm;
     }
 }

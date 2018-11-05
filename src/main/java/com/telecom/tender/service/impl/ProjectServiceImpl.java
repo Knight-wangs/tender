@@ -524,4 +524,9 @@ public class ProjectServiceImpl implements ProjectService {
         }
         return result;
     }
+
+    @Override
+    public BidderForm getBidderForm(String projectId, String bidderid) {
+        return projectMapper.getBidderForm(projectId,bidderid);
+    }
 }

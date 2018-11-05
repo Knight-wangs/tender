@@ -73,7 +73,7 @@ public interface AccountMapper {
     @Select("select fileposition from bidderfile where projectId=#{projectId} and bidderId=#{bidderId}")
     String getBidderFile(@Param("projectId") String projectId,@Param("bidderId")String bidderId);
     //查询投标人资质文件hash
-    @Select("select filehash from bidder where projectId=#{projectId} and bidderId=#{bidderId}")
+    @Select("select filehash from bidderfile where projectId=#{projectId} and bidderId=#{bidderId}")
     String getBidderFileHash(@Param("projectId") String projectId,@Param("bidderId")String bidderId);
     //查询投标方资质审核文件的存在数据
     @Select("select fileData from bidderfile where projectId=#{projectId} and bidderId=#{bidderId}")

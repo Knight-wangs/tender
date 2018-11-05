@@ -13,7 +13,7 @@ public interface ProjectMapper {
     @Select("select * from project where 1=1 order by tenderTime DESC")
     public List<Project> getAllProject();
     //查询等待所有开标的项目
-    @Select("select * from project where state = '1'")
+    @Select("select * from project where state = '3'")
     public List<Project> getAllOpenProject();
     //根据id查询项目
     @Select("select * from project where id = #{id}")
