@@ -465,7 +465,7 @@ public class ProjectControl {
     public String evaluation(String approvalId, String projectId,  String techScore,
                              String bussScore, String serverScore,String totalScore ,String comment){
         String projectState = projectService.getProjectState(projectId);
-        if (!projectState.equals("2")){
+        if (!projectState.equals(EVALUATION) && !projectState.equals(OPEN)){
             return FAIL+"项目状态不可评标";
         }
         DefaultTransactionDefinition defaultTransactionDefinition = new DefaultTransactionDefinition();
