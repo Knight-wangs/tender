@@ -1,5 +1,7 @@
 package com.telecom.tender.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class ProjectBidderQualify {
@@ -7,7 +9,9 @@ public class ProjectBidderQualify {
     private String name;
     private String industry;
     private String area;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date opentime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date tenderTime;
     private String state;
     private String isQualify;
