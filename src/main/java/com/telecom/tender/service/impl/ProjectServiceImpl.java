@@ -422,20 +422,26 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public int setSelectedApprover(String projectId,JSONObject makeprofess) {
-        try {
-            Thread.sleep(40*1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         JSONObject selectResult = depositService.getselectprofessor(Integer.valueOf(projectId));
         if (selectResult!=null) {
             JSONArray professorList = selectResult.getJSONArray("data");
+            while (professorList == null){
+                try {
+                    Thread.sleep(1*1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                selectResult = depositService.getselectprofessor(Integer.valueOf(projectId));
+                professorList = selectResult.getJSONArray("data");
+            }
             List<String> professors = new ArrayList<>();
             for (int i=0;i<professorList.size();i++) {
                 professors.add(professorList.getString(i));
             }
             return projectMapper.setSelectedApprover(projectId, professors.toString(), makeprofess.toJSONString());
         }
+
         return 0;
     }
 

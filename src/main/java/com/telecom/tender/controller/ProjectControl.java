@@ -588,8 +588,13 @@ public class ProjectControl {
     }
     @RequestMapping("/makeprofessor")
     @ResponseBody
-    public JSONArray makeprofessor(String projectId,Integer num){
-        JSONArray results = new JSONArray();
+    public JSONObject makeprofessor(String projectId,Integer num){
+        JSONObject results = new JSONObject();
+        results.put("state","1");
+        if (num!=null && num<1){
+            return results;
+        }
+        JSONArray data = new JSONArray();
         SelectedApprover selectedApprover = projectService.getSelectedApprover(projectId);
         if (selectedApprover == null || StringUtils.isBlank(selectedApprover.getProfessorList())){
             List<String> approverIDs = new ArrayList<>();
@@ -603,16 +608,17 @@ public class ProjectControl {
                 selectedApprover = projectService.getSelectedApprover(projectId);
             }
         }
-        if(StringUtils.isNotBlank(selectedApprover.getProfessorList())) {
+        if(selectedApprover!=null && StringUtils.isNotBlank(selectedApprover.getProfessorList())) {
             String[] professorList = StringUtils.strip(selectedApprover.getProfessorList(), "[]").split(",");
             for (int i = 0; i < professorList.length; i++) {
                 JSONObject detail = new JSONObject();
                 detail.put("progectID", projectId);
                 Approver approver = accountService.getApprover(professorList[i].trim());
                 detail.put("professors", approver);
-                results.add(detail);
+                data.add(detail);
             }
         }
+        results.put("data",data);
         return results;
     }
     @RequestMapping("/makeProfessorChainData")
