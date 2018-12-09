@@ -34,10 +34,10 @@ public class remoteTest {
 //        JSONObject result = depositService.setBTime(openDate.getTime()/1000,"4");
 //        System.out.println(result);
 
-//        JSONObject btime = depositService.getBTime("1");
-//        System.out.println(btime);
-//
-        JSONObject verify = depositService.verifybtime("4");
-        System.out.println(verify);
+        JSONObject btime = depositService.getBTime("114");
+        System.out.println(btime);
+
+//        JSONObject verify = depositService.verifybtime("4");
+//        System.out.println(verify);
     }
 }

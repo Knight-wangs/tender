@@ -409,7 +409,7 @@ public class ProjectControl {
         }
         return FAIL;
     }
-    //更新评委信息
+    //更新评委信息（弃用）
     @RequestMapping("/updateApproverInfo")
     @ResponseBody
     public String updateApproverInfo(String id,String info){
