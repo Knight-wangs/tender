@@ -640,7 +640,7 @@ public class ProjectControl {
         JSONArray result = new JSONArray();
         JSONObject chainData = projectService.getOpenTimeResult(projectId);
         String projectState = projectService.getProjectState(projectId);
-        if (!projectState.equals(BIDDER)){
+        if (Integer.valueOf(projectState) < Integer.valueOf(OPEN)){
             JSONObject data = chainData.getJSONObject("data");
             if (!data.isEmpty()){
                 data.put("verify","false");
