@@ -400,7 +400,7 @@ public class ProjectControl {
         catch (Exception e){
             return FAIL;
         }
-        if (null!=uploadresult&&uploadresult.getString("msg").equals("success")){
+        if (null!=uploadresult && uploadresult.getString("msg").equals("success")){
             String hash = uploadresult.getJSONObject("data").getString("md5");
             String fileData = projectService.getFileData(uploadresult.getString("data"));
             projectService.setProjectState(projectId,QUALIFY);
@@ -638,7 +638,15 @@ public class ProjectControl {
     @ResponseBody
     public JSONArray getOpenTimeResult(String projectId){
         JSONArray result = new JSONArray();
-        result.add(projectService.getOpenTimeResult(projectId));
+        JSONObject chainData = projectService.getOpenTimeResult(projectId);
+        String projectState = projectService.getProjectState(projectId);
+        if (!projectState.equals(BIDDER)){
+            JSONObject data = chainData.getJSONObject("data");
+            if (!data.isEmpty()){
+                data.put("verify","false");
+            }
+        }
+        result.add(chainData);
         return result;
     }
     //开标时间上链信息

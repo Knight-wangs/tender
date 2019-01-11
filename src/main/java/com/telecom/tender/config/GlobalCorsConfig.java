@@ -13,17 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @Configuration
 public class GlobalCorsConfig {
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurerAdapter() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**")
-//                        .allowedMethods("*")// 这个一定要调用
-//                        .allowedOrigins("*");
-//            }
-//        };
-//    }
+
         @Bean
         public FilterRegistrationBean corsFilter() {
             UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
