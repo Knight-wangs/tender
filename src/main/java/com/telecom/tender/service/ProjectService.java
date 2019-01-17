@@ -2,6 +2,7 @@ package com.telecom.tender.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.telecom.tender.model.*;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Date;
@@ -17,6 +18,8 @@ public interface ProjectService {
     //根据id查询项目的信息
     Project getProjectById(String projectID);
 
+    //根据项目id删除项目
+    int deleteProjectById(String id);
     //新建项目
 //    public int newProject(String name, String assessor, String industry, String area, Date opentimme, Date tenderTime,String state);
     int newProject(Project project);

@@ -18,7 +18,9 @@ public interface ProjectMapper {
     //根据id查询项目
     @Select("select * from project where id = #{id}")
     public Project getProjectById(@Param("id") String id);
-
+    //根据id删除项目
+    @Delete("delete from project where id = #{id}")
+    public int deleteProjectById(@Param("id") String id);
     //根据项目id查项目审批情况
     @Select("select view,detail from approvalform left join approver on approvalform.approvalid = approver.userid " +
             "where projectid = #{projectid}")

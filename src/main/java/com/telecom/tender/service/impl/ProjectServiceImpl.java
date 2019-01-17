@@ -65,6 +65,11 @@ public class ProjectServiceImpl implements ProjectService {
         return projectMapper.getProjectById(projectID);
     }
 
+    @Override
+    public int deleteProjectById(String id) {
+        return projectMapper.deleteProjectById(id);
+    }
+
 //    @Override
 //    public int newProject(String name, String assessor, String industry, String area, Date opentime,Date tenderTime, String state) {
 //        return projectMapper.newProject(name, assessor, industry, area, opentime, tenderTime, state);
@@ -143,13 +148,13 @@ public class ProjectServiceImpl implements ProjectService {
                           String bussScore, String serverScore,String totalScore, String comment,int state) {
         JSONObject ev_json = new JSONObject();
         JSONObject file_json = new JSONObject();
-        ev_json.put("projectId",projectId);
-        ev_json.put("approvalId",approvalId);
-        ev_json.put("techScore",techScore);
-        ev_json.put("bussScore",bussScore);
-        ev_json.put("serverScore",serverScore);
-        ev_json.put("totalScore",totalScore);
-        ev_json.put("comment",comment);
+        ev_json.put(EvaluationDataType.projectId,projectId);
+        ev_json.put(EvaluationDataType.approvalId,approvalId);
+        ev_json.put(EvaluationDataType.techScore,techScore);
+        ev_json.put(EvaluationDataType.bussScore,bussScore);
+        ev_json.put(EvaluationDataType.serverScore,serverScore);
+        ev_json.put(EvaluationDataType.totalScore,totalScore);
+        ev_json.put(EvaluationDataType.comment,comment);
         file_json.put("files",new ArrayList<String>());
         JSONObject result = depositService.evidencestore("评委意见","招投标平台",ev_json.toString(),file_json.toString());
         if (state == 0) {
@@ -277,7 +282,7 @@ public class ProjectServiceImpl implements ProjectService {
         JSONObject evidenceData = (JSONObject) evidence.get("data");
         if (evidenceData!=null ){
             JSONObject verifyData = depositService.verify(id,evidenceData.getString("evJson"));
-            if (verifyData.getString("msg").equals("success")) {
+            if ((("success").equals(verifyData.getString("msg"))) && checkEvaluationData(approvalForm,evidenceData.getJSONObject("evJson"))) {
                 result.put("notChanged", true);
             }
             else {
@@ -299,6 +304,19 @@ public class ProjectServiceImpl implements ProjectService {
         return result;
     }
 
+    private boolean checkEvaluationData(ApprovalForm approvalForm,JSONObject evidenceData){
+        if (approvalForm.getProjectId().equals(evidenceData.getString(EvaluationDataType.projectId)) &&
+                (approvalForm.getApprovalid().equals(evidenceData.getString(EvaluationDataType.approvalId))) &&
+                (approvalForm.getTechScore().equals(evidenceData.getString(EvaluationDataType.techScore))) &&
+                (approvalForm.getBussScore().equals(evidenceData.getString(EvaluationDataType.bussScore)))  &&
+                (approvalForm.getServerScore().equals(evidenceData.getString(EvaluationDataType.serverScore))) &&
+                (approvalForm.getTotalScore().equals(evidenceData.getString(EvaluationDataType.totalScore))) &&
+                (approvalForm.getComment().equals(evidenceData.getString(EvaluationDataType.comment)))){
+            return true;
+        }
+        return false;
+
+    }
     @Override
     public List<ApprovalForm> getAllOpinionByProjectId(String projectid) {
         return projectMapper.getAllOpinionByProjectId(projectid);

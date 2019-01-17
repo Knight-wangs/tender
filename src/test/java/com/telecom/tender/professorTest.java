@@ -45,7 +45,7 @@ public class professorTest {
 //        JSONObject resilt = depositService.makeprofessor(3,2, StringUtils.strip(experts.toString(),"[]"));
 //        System.out.println(resilt);
 
-        JSONObject select = depositService.getselectprofessor(20);
+        JSONObject select = depositService.getselectprofessor(30);
         JSONArray list = select.getJSONArray("data");
         List<String> professors = new ArrayList<>();
         for (int i=0;i<list.size();i++) {

@@ -26,16 +26,16 @@ public class remoteTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date openDate =new Date();
         try {
-             openDate =sdf.parse("2018-10-26 16:55:00");
+             openDate =sdf.parse("2019-01-26 16:55:00");
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-//        JSONObject result = depositService.setBTime(openDate.getTime()/1000,"4");
-//        System.out.println(result);
-
-        JSONObject btime = depositService.getBTime("114");
-        System.out.println(btime);
+        JSONObject result = depositService.setBTime(openDate.getTime()/1000,"26");
+        System.out.println(result);
+//
+//        JSONObject btime = depositService.getBTime("114");
+//        System.out.println(btime);
 
 //        JSONObject verify = depositService.verifybtime("4");
 //        System.out.println(verify);

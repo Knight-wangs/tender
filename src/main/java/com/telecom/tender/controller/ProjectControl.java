@@ -468,6 +468,11 @@ public class ProjectControl {
         if (!projectState.equals(EVALUATION) && !projectState.equals(OPEN)){
             return FAIL+"项目状态不可评标";
         }
+        if (StringUtils.isBlank(approvalId) || StringUtils.isBlank(projectId) ||StringUtils.isBlank(techScore) ||
+                StringUtils.isBlank(bussScore) || StringUtils.isBlank(serverScore) ||
+                StringUtils.isBlank(totalScore) || StringUtils.isBlank(comment)){
+            return FAIL+"评分不能为空";
+        }
         DefaultTransactionDefinition defaultTransactionDefinition = new DefaultTransactionDefinition();
         defaultTransactionDefinition
                 .setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -543,7 +548,7 @@ public class ProjectControl {
         return projectService.getAllBidderByProjectId(projectId);
     }
 
-    //查询
+    //查询评委打分
     @RequestMapping("/getApprovalEvaluation")
     @ResponseBody
     public List<ApprovalForm> getApprovalEvaluation(String projectId, String approvalId){
@@ -736,6 +741,15 @@ public class ProjectControl {
             ProjectBidderTenderFileList.add(ProjectBidderTenderFile);
         }
         return ProjectBidderTenderFileList;
+    }
+    //删除项目
+    @RequestMapping("/deleteProject")
+    @ResponseBody
+    public String deleteProject(String projectId){
+        if (projectService.deleteProjectById(projectId)>0){
+            return SUCCESS;
+        }
+        return FAIL;
     }
 
 }

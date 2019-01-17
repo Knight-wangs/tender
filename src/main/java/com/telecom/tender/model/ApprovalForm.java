@@ -67,16 +67,16 @@ public class ApprovalForm {
         this.totalScore = totalScore;
     }
 
-    public String getOpinionData() {
-        return opinionData;
-    }
-
-    public String getOption() {
+    public String getComment() {
         return comment;
     }
 
-    public void setOption(String comment) {
+    public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getOpinionData() {
+        return opinionData;
     }
 
     public void setOpinionData(String opinionData) {
